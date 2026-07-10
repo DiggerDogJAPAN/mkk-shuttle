@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MKK Shuttle
 
-## Getting Started
+MKK Shuttle is a comprehensive online airport shuttle booking service, facilitating direct transfers between Tokyo airports (Narita and Haneda) and the Myoko region in Japan.
 
-First, run the development server:
+## Technology Stack
 
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS, class-variance-authority, lucide-react
+- **Database / Auth**: Supabase (PostgreSQL, Row Level Security, Auth)
+- **Payments**: Stripe (Checkout Sessions, Webhooks)
+- **Email**: Resend
+- **Language**: TypeScript
+
+## Local Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd myoko-shuttle
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+## Environment Variable Setup
+
+This project requires environment variables to connect to Supabase, Stripe, and Resend.
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Open `.env.local` and replace the placeholder values with your real development keys.
+
+> **WARNING:** Real credentials must NEVER be committed to version control. Always ensure `.env.local`, `.env`, and similar files remain in your `.gitignore` and are not accidentally staged.
+
+## Commands
+
+### Development
+Start the local development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the site in your browser.
+
+### Production Build
+To create a production-ready optimized build:
+```bash
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To start the production server:
+```bash
+npm start
+```

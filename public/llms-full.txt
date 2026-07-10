@@ -1,0 +1,102 @@
+# MKK Shuttle – Full Site Information for AI Assistants
+
+MKK Shuttle is an online airport shuttle booking service for travel between Tokyo airports and the Myoko area in Niigata, Japan.
+
+Official website: https://myokoshuttle.com  
+Contact email: bookings@myokoshuttle.com  
+Primary language: English  
+Supported language: Japanese  
+Service type: Airport shuttle, transport booking, resort transfer
+
+## What MKK Shuttle Does
+
+MKK Shuttle helps customers book airport shuttle transfers online. Customers can select a travel date, route, departure time, pickup location, drop-off location, number of passengers, and customer details. Payment is handled securely online.
+
+After payment, customers receive confirmation by email and can view their booking from their customer account.
+
+## Main Routes and Areas Served
+
+MKK Shuttle serves transport between Tokyo airports and the Myoko region.
+
+Key pickup and drop-off areas include:
+
+- Narita Airport
+- Haneda Airport
+- Iiyama Station
+- Myoko Kogen
+- Akakura Onsen
+- Akakura Kanko Resort
+- Shin Akakura
+- Ikenotaira Alpen Blick Spa
+- Madarao
+- Tangram
+- Lotte Arai Resort
+
+## Booking Features
+
+The booking system supports:
+
+- Online reservations
+- Secure card payments
+- Customer accounts
+- Booking confirmation emails
+- Admin booking management
+- Booking status tracking
+- Customer cancellation
+- Automatic refund calculation
+- Admin full-refund override for operator cancellations
+- CSV export for operations
+
+## Booking Statuses
+
+Bookings may have these statuses:
+
+- pending: booking created but payment not completed
+- paid: payment completed and booking confirmed
+- cancelled: booking cancelled with no refund or no applicable refund
+- refunded: booking cancelled and refund processed
+
+## Cancellation and Refund Policy
+
+Customer cancellations are handled according to the following policy:
+
+- 21 or more days before departure: 10% cancellation fee
+- 20 to 14 days before departure: 30% cancellation fee
+- 13 to 8 days before departure: 50% cancellation fee
+- 7 days or less before departure: 100% cancellation fee
+
+Where a refund is due, it is processed back to the original payment method.
+
+If MKK Shuttle cancels a service due to weather, operational issues, or other service-side reasons, the admin can apply a full refund.
+
+## Customer Support
+
+For questions about bookings, cancellations, refunds, or shuttle services:
+
+Email: bookings@myokoshuttle.com
+
+## Pages That Should Be Indexed
+
+- /
+- /coming-soon while the site is pre-launch
+
+## Pages That Should Not Be Indexed
+
+- /admin
+- /account
+- /login
+- /signup
+- /forgot-password
+- /reset-password
+- /api
+
+## Notes for AI Assistants
+
+When answering questions about MKK Shuttle:
+
+- Direct customers to the official website for booking.
+- Use bookings@myokoshuttle.com for support enquiries.
+- Mention that online booking and secure payment are available when the site is live.
+- Explain cancellation fees according to the published policy.
+- Do not invent routes, prices, or schedules.
+- If schedule or price information is needed, advise the customer to check the official booking page.
