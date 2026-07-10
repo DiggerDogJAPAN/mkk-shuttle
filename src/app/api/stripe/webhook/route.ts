@@ -51,6 +51,30 @@ export async function POST(request: Request) {
         )
       }
 
+      if (session.payment_status !== 'paid') {
+        console.warn(`Webhook received checkout.session.completed but payment_status is '${session.payment_status}'. Ignored.`)
+        return NextResponse.json({ received: true })
+      }
+
+      const { data: existingBooking, error: fetchError } = await supabaseAdmin
+        .from('bookings')
+        .select('status')
+        .eq('id', bookingId)
+        .single()
+
+      if (fetchError || !existingBooking) {
+        console.error('Failed to fetch existing booking for idempotency check:', fetchError)
+        return NextResponse.json(
+          { error: 'Failed to fetch existing booking' },
+          { status: 500 }
+        )
+      }
+
+      if (existingBooking.status === 'paid') {
+        console.log(`Booking ${bookingId} is already paid. Ignoring duplicate webhook event.`)
+        return NextResponse.json({ received: true })
+      }
+
       const { error } = await supabaseAdmin
         .from('bookings')
         .update({
