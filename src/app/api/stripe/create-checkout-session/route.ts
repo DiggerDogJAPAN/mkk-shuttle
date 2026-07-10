@@ -18,6 +18,23 @@ export async function POST(request: Request) {
       )
     }
 
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const supabaseClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token)
+
+    if (authError || !user || !user.email) {
+      return NextResponse.json({ error: 'Unauthorized user or missing email' }, { status: 401 })
+    }
+
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('bookings')
       .select(`
@@ -50,12 +67,43 @@ export async function POST(request: Request) {
       )
     }
 
+    const SEASON_START = '2026-12-15'
+    const SEASON_END = '2027-03-31'
+    if (booking.travel_date < SEASON_START || booking.travel_date > SEASON_END) {
+      return NextResponse.json(
+        { error: 'Bookings are currently available from December 15, 2026 to March 31, 2027.' },
+        { status: 400 }
+      )
+    }
+
     if (!booking.price || booking.price <= 0) {
       return NextResponse.json(
         { error: 'Invalid booking price' },
         { status: 400 }
       )
     }
+
+    if (booking.user_id !== user.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized booking access' },
+        { status: 401 }
+      )
+    }
+
+    const { error: enforceEmailError } = await supabaseAdmin
+      .from('bookings')
+      .update({ email: user.email })
+      .eq('id', booking.id)
+
+    if (enforceEmailError) {
+      console.error('Failed to enforce user email:', enforceEmailError)
+      return NextResponse.json(
+        { error: 'Failed to update booking email' },
+        { status: 500 }
+      )
+    }
+
+    booking.email = user.email
 
     const origin = request.headers.get('origin') || 'http://localhost:3000'
 

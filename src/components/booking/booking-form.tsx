@@ -38,6 +38,9 @@ function getEarliestBookingDateString() {
   return `${year}-${month}-${day}`
 }
 
+const SEASON_START = '2026-12-15'
+const SEASON_END = '2027-03-31'
+
 export function BookingForm() {
   const router = useRouter()
   const [routes, setRoutes] = useState<any[]>([])
@@ -64,9 +67,18 @@ export function BookingForm() {
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [country, setCountry] = useState('')
 
-  const [freeTickets, setFreeTickets] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [acceptedRefundPolicy, setAcceptedRefundPolicy] = useState(false)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user?.email) {
+        setEmail(user.email)
+      }
+    }
+    fetchUser()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,17 +186,25 @@ export function BookingForm() {
       setBookingLoading(true)
 
       const {
-        data: { user },
-      } = await supabase.auth.getUser()
+        data: { session },
+      } = await supabase.auth.getSession()
 
-      if (!user) {
-        alert('Please log in first to complete your booking.')
+      const user = session?.user
+
+      if (!user || !user.email) {
+        alert('Please log in first to complete your booking. A valid account email is required.')
         router.push('/login')
         return
       }
 
       if (isBeforeEarliestBookingDate(travelDate)) {
         alert('Please select a travel date at least 13 days from today.')
+        setBookingLoading(false)
+        return
+      }
+
+      if (travelDate < SEASON_START || travelDate > SEASON_END) {
+        alert('Bookings are currently available from December 15, 2026 to March 31, 2027.')
         setBookingLoading(false)
         return
       }
@@ -222,7 +242,7 @@ export function BookingForm() {
         hotel_name: hotelName,
         date_of_birth: dateOfBirth,
         country,
-        free_tickets: freeTickets,
+        free_tickets: false,
         accepted_terms: acceptedTerms,
         accepted_refund_policy: acceptedRefundPolicy,
         status: 'pending',
@@ -249,6 +269,7 @@ export function BookingForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
           bookingId: newBooking.id,
@@ -315,7 +336,8 @@ export function BookingForm() {
                 <input
                   type="date"
                   value={travelDate}
-                  min={getEarliestBookingDateString()}
+                  min={getEarliestBookingDateString() > SEASON_START ? getEarliestBookingDateString() : SEASON_START}
+                  max={SEASON_END}
                   onChange={(e) => {
                     setTravelDate(e.target.value)
                     setSelectedRoute(null)
@@ -502,10 +524,13 @@ export function BookingForm() {
                     type="email"
                     placeholder="Email Address"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 placeholder:text-slate-300"
+                    readOnly
+                    className="w-full h-14 px-6 rounded-2xl bg-slate-100 border-none focus:ring-0 font-medium text-slate-500 cursor-not-allowed"
                     required
                   />
+                  <p className="text-[10px] text-slate-400 font-medium ml-1">
+                    Booking confirmations will be sent to your account email.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
@@ -631,20 +656,6 @@ export function BookingForm() {
                   <div className="pt-0.5">
                     <input
                       type="checkbox"
-                      checked={freeTickets}
-                      onChange={(e) => setFreeTickets(e.target.checked)}
-                      className="w-5 h-5 rounded border-slate-200 text-primary focus:ring-primary/20 transition-all"
-                    />
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">
-                    Apply for 5 free local shuttle tickets
-                  </span>
-                </label>
-
-                <label className="flex items-start gap-4 group cursor-pointer">
-                  <div className="pt-0.5">
-                    <input
-                      type="checkbox"
                       checked={acceptedTerms}
                       onChange={(e) => setAcceptedTerms(e.target.checked)}
                       className="w-5 h-5 rounded border-slate-200 text-primary focus:ring-primary/20 transition-all"
@@ -672,6 +683,28 @@ export function BookingForm() {
                     <a href="/terms-conditions#cancellations-and-refunds" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold">refund policy</a>
                   </span>
                 </label>
+              </div>
+            </div>
+          )}
+
+          {/* Important Payment Notice */}
+          {price && (
+            <div className="pt-8 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex gap-4 shadow-sm">
+                <div className="flex-shrink-0 mt-0.5">
+                  <Info className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="space-y-2">
+                  <h4 className="text-sm font-bold text-amber-900">Important</h4>
+                  <div className="text-sm text-amber-800 space-y-2 leading-relaxed font-medium">
+                    <p>
+                      After completing your payment, please remain on the Stripe payment page until you are automatically redirected back to Myoko Shuttle.
+                    </p>
+                    <p>
+                      Closing the payment window before the redirect may delay your booking confirmation.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
