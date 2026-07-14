@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from "react"
 import { PageHeading } from "@/components/ui/page-heading"
 import { supabase } from "@/lib/supabaseClient"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { AdminCollapsibleSection } from "@/components/admin/admin-collapsible-section"
+import { useAdminCollapsibleController } from "@/hooks/use-admin-collapsible"
 
 export default function AdminSchedulesPage() {
   const [routes, setRoutes] = useState<any[]>([])
@@ -11,6 +13,8 @@ export default function AdminSchedulesPage() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   
+  const { expandAll, collapseAll, controllerProps } = useAdminCollapsibleController()
+
   const [showForm, setShowForm] = useState(false)
   const [routeId, setRouteId] = useState('')
   const [departureTime, setDepartureTime] = useState('')
@@ -21,7 +25,7 @@ export default function AdminSchedulesPage() {
     try {
       const [routesResult, schedulesResult] = await Promise.all([
         supabase.from('routes').select('*').order('name'),
-        supabase.from('route_schedules').select('*, route:routes(*)').order('departure_time')
+        supabase.from('route_schedules').select('*, route:routes(*)').order('departure_time', { ascending: true })
       ])
 
       if (routesResult.error) throw routesResult.error
@@ -250,52 +254,61 @@ export default function AdminSchedulesPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {groupedSchedules.map(routeGroup => (
-              <div key={routeGroup.routeName} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-base">{routeGroup.routeName}</h3>
-                </div>
-                <div className="p-6">
-                  <div className="space-y-1">
-                    {routeGroup.schedules.map(schedule => (
-                      <div key={schedule.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                        <div className="flex items-center gap-4">
-                          <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
-                            {schedule.departure_time ? schedule.departure_time.slice(0, 5) : 'N/A'}
-                          </span>
-                          {schedule.label && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                              {schedule.label}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setShowForm(true)
-                              setEditingScheduleId(schedule.id)
-                              setRouteId(schedule.route_id || '')
-                              setDepartureTime(schedule.departure_time ? schedule.departure_time.slice(0, 5) : '')
-                              setLabel(schedule.label || '')
-                            }}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteSchedule(schedule.id)}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            {groupedSchedules.length > 1 && (
+              <div className="flex justify-end gap-4 pb-2">
+                <button onClick={expandAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Expand all</button>
+                <button onClick={collapseAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Collapse all</button>
               </div>
+            )}
+            {groupedSchedules.map(routeGroup => (
+              <AdminCollapsibleSection
+                key={routeGroup.routeName}
+                title={routeGroup.routeName}
+                count={routeGroup.schedules.length}
+                countLabel="schedules"
+                defaultOpen={groupedSchedules.length === 1}
+                isEditing={routeGroup.schedules.some(s => s.id === editingScheduleId)}
+                controller={controllerProps}
+              >
+                <div className="space-y-1">
+                  {routeGroup.schedules.map(schedule => (
+                    <div key={schedule.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                      <div className="flex items-center gap-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
+                          {schedule.departure_time ? schedule.departure_time.slice(0, 5) : 'N/A'}
+                        </span>
+                        {schedule.label && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                            {schedule.label}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setShowForm(true)
+                            setEditingScheduleId(schedule.id)
+                            setRouteId(schedule.route_id || '')
+                            setDepartureTime(schedule.departure_time ? schedule.departure_time.slice(0, 5) : '')
+                            setLabel(schedule.label || '')
+                          }}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteSchedule(schedule.id)}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </AdminCollapsibleSection>
             ))}
           </div>
         )}

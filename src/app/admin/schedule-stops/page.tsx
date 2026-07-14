@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from "react"
 import { PageHeading } from "@/components/ui/page-heading"
 import { supabase } from "@/lib/supabaseClient"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { AdminCollapsibleSection } from "@/components/admin/admin-collapsible-section"
+import { useAdminCollapsibleController } from "@/hooks/use-admin-collapsible"
 
 export default function AdminScheduleStopsPage() {
   const [routes, setRoutes] = useState<any[]>([])
@@ -14,6 +16,8 @@ export default function AdminScheduleStopsPage() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   
+  const { expandAll, collapseAll, controllerProps } = useAdminCollapsibleController()
+
   const [showForm, setShowForm] = useState(false)
   const [scheduleId, setScheduleId] = useState('')
   const [stopId, setStopId] = useState('')
@@ -29,7 +33,7 @@ export default function AdminScheduleStopsPage() {
         scheduleStopsResult
       ] = await Promise.all([
         supabase.from('routes').select('*'),
-        supabase.from('route_schedules').select('*'),
+        supabase.from('route_schedules').select('*').order('departure_time', { ascending: true }),
         supabase.from('stops').select('*'),
         supabase.from('schedule_stops').select('*')
       ])
@@ -343,21 +347,36 @@ export default function AdminScheduleStopsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {groupedData.map(routeGroup => (
-              <div key={routeGroup.routeName} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-base">{routeGroup.routeName}</h3>
-                </div>
-                <div className="divide-y divide-slate-100">
-                  {routeGroup.departures.map(depGroup => (
-                    <div key={depGroup.departureTime} className="p-6">
-                      <div className="mb-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
-                          {depGroup.departureTime}
-                        </span>
-                      </div>
+            {(() => {
+              const flatGroups = groupedData.flatMap(routeGroup => 
+                routeGroup.departures.map(depGroup => ({
+                  routeName: routeGroup.routeName,
+                  departureTime: depGroup.departureTime,
+                  stops: depGroup.stops
+                }))
+              )
+
+              return (
+                <>
+                  {flatGroups.length > 1 && (
+                    <div className="flex justify-end gap-4 pb-2">
+                      <button onClick={expandAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Expand all</button>
+                      <button onClick={collapseAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Collapse all</button>
+                    </div>
+                  )}
+                  {flatGroups.map(group => (
+                    <AdminCollapsibleSection
+                      key={`${group.routeName}-${group.departureTime}`}
+                      title={group.routeName}
+                      subtitle={group.departureTime}
+                      count={group.stops.length}
+                      countLabel="stops"
+                      defaultOpen={flatGroups.length === 1}
+                      isEditing={group.stops.some(s => s.id === editingId)}
+                      controller={controllerProps}
+                    >
                       <div className="space-y-1">
-                        {depGroup.stops.map(row => (
+                        {group.stops.map(row => (
                           <div key={row.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                             <div className="flex items-center gap-4">
                               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
@@ -397,11 +416,11 @@ export default function AdminScheduleStopsPage() {
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </AdminCollapsibleSection>
                   ))}
-                </div>
-              </div>
-            ))}
+                </>
+              )
+            })()}
           </div>
         )}
       </div>

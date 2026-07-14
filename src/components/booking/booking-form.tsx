@@ -7,6 +7,7 @@ import { BookingSummarySidebar } from './booking-summary-sidebar'
 import { Container } from '@/components/ui/container'
 import { cn } from '@/lib/utils'
 import { ArrowRight, Info, ShieldCheck, Snowflake, MapPin, Languages, Mountain, Clock, Plane, Cloud, Mail } from 'lucide-react'
+import { resolveJourneyPrice } from '@/lib/utils/pricing'
 
 const ADVANCE_BOOKING_DAYS = 13
 
@@ -107,22 +108,22 @@ export function BookingForm() {
         return
       }
 
-      const { data, error } = await supabase
-        .from('prices')
-        .select('*')
-        .eq('from_stop_id', departure.id)
-        .eq('to_stop_id', arrival.id)
-        .single()
+      const result = await resolveJourneyPrice({
+        supabase,
+        scheduleId: selectedSchedule?.id,
+        fromStopId: departure.id,
+        toStopId: arrival.id,
+      })
 
-      if (data) {
-        setPrice(data.price)
+      if (result) {
+        setPrice(result.pricePerPassenger)
       } else {
         setPrice(null)
       }
     }
 
     fetchPrice()
-  }, [departure, arrival])
+  }, [selectedSchedule, departure, arrival])
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -400,6 +401,7 @@ export function BookingForm() {
                     <option value="">Select Time</option>
                     {selectedRoute.route_schedules
                       .filter((s: any) => !blockedScheduleIds.includes(s.id))
+                      .sort((a: any, b: any) => a.departure_time.localeCompare(b.departure_time))
                       .map((s: any) => (
                       <option key={s.id} value={s.id}>
                         {formatTime(s.departure_time)}

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
+import { resolveJourneyPrice } from '@/lib/utils/pricing'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -76,9 +77,25 @@ export async function POST(request: Request) {
       )
     }
 
-    if (!booking.price || booking.price <= 0) {
+    const pricingResult = await resolveJourneyPrice({
+      supabase: supabaseAdmin,
+      scheduleId: booking.schedule_id,
+      fromStopId: booking.from_stop_id,
+      toStopId: booking.to_stop_id,
+    })
+
+    if (!pricingResult) {
       return NextResponse.json(
-        { error: 'Invalid booking price' },
+        { error: 'No price is configured for this journey.' },
+        { status: 400 }
+      )
+    }
+
+    const serverTotalPrice = pricingResult.pricePerPassenger * booking.passengers
+
+    if (serverTotalPrice <= 0) {
+      return NextResponse.json(
+        { error: 'Invalid calculated booking price' },
         { status: 400 }
       )
     }
@@ -92,7 +109,10 @@ export async function POST(request: Request) {
 
     const { error: enforceEmailError } = await supabaseAdmin
       .from('bookings')
-      .update({ email: user.email })
+      .update({ 
+        email: user.email,
+        price: serverTotalPrice 
+      })
       .eq('id', booking.id)
 
     if (enforceEmailError) {
@@ -116,7 +136,7 @@ export async function POST(request: Request) {
           quantity: 1,
           price_data: {
             currency: 'jpy',
-            unit_amount: booking.price,
+            unit_amount: serverTotalPrice,
             product_data: {
               name: `${booking.routes?.from_location} to ${booking.routes?.to_location}`,
               description: `${booking.travel_date} ${booking.departure_time?.slice(0, 5)} | ${booking.from_stop?.name} to ${booking.to_stop?.name}`,
@@ -126,6 +146,8 @@ export async function POST(request: Request) {
       ],
       metadata: {
         booking_id: booking.id,
+        pricing_type: pricingResult.pricingType,
+        price_per_passenger: pricingResult.pricePerPassenger.toString(),
       },
       success_url: `${origin}/booking-success?booking_id=${booking.id}`,
       cancel_url: `${origin}/booking-cancelled?booking_id=${booking.id}`,

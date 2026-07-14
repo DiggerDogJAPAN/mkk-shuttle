@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from "react"
 import { PageHeading } from "@/components/ui/page-heading"
 import { supabase } from "@/lib/supabaseClient"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { AdminCollapsibleSection } from "@/components/admin/admin-collapsible-section"
+import { useAdminCollapsibleController } from "@/hooks/use-admin-collapsible"
 
 export default function AdminStopsPage() {
   const [routes, setRoutes] = useState<any[]>([])
@@ -11,6 +13,8 @@ export default function AdminStopsPage() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   
+  const { expandAll, collapseAll, controllerProps } = useAdminCollapsibleController()
+
   const [showForm, setShowForm] = useState(false)
   const [routeId, setRouteId] = useState('')
   const [name, setName] = useState('')
@@ -267,56 +271,65 @@ export default function AdminStopsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {groupedStops.map(routeGroup => (
-              <div key={routeGroup.routeName} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-base">{routeGroup.routeName}</h3>
-                </div>
-                <div className="p-6">
-                  <div className="space-y-1">
-                    {routeGroup.stops.map(stop => (
-                      <div key={stop.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
-                            {stop.stop_order}
-                          </span>
-                          <span className="font-medium text-slate-700 text-sm">
-                            {stop.name}
-                          </span>
-                          {stop.label && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                              {stop.label}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setShowForm(true)
-                              setEditingStopId(stop.id)
-                              setRouteId(stop.route_id || '')
-                              setName(stop.name || '')
-                              setStopOrder(stop.stop_order ?? '')
-                              setLabel(stop.label || '')
-                            }}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteStop(stop.id)}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            {groupedStops.length > 1 && (
+              <div className="flex justify-end gap-4 pb-2">
+                <button onClick={expandAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Expand all</button>
+                <button onClick={collapseAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Collapse all</button>
               </div>
+            )}
+            {groupedStops.map(routeGroup => (
+              <AdminCollapsibleSection
+                key={routeGroup.routeName}
+                title={routeGroup.routeName}
+                count={routeGroup.stops.length}
+                countLabel="stops"
+                defaultOpen={groupedStops.length === 1}
+                isEditing={routeGroup.stops.some(s => s.id === editingStopId)}
+                controller={controllerProps}
+              >
+                <div className="space-y-1">
+                  {routeGroup.stops.map(stop => (
+                    <div key={stop.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                      <div className="flex items-center gap-4">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
+                          {stop.stop_order}
+                        </span>
+                        <span className="font-medium text-slate-700 text-sm">
+                          {stop.name}
+                        </span>
+                        {stop.label && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                            {stop.label}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setShowForm(true)
+                            setEditingStopId(stop.id)
+                            setRouteId(stop.route_id || '')
+                            setName(stop.name || '')
+                            setStopOrder(stop.stop_order ?? '')
+                            setLabel(stop.label || '')
+                          }}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteStop(stop.id)}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </AdminCollapsibleSection>
             ))}
           </div>
         )}

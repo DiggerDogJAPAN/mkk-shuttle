@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from "react"
 import { PageHeading } from "@/components/ui/page-heading"
 import { supabase } from "@/lib/supabaseClient"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { AdminCollapsibleSection } from "@/components/admin/admin-collapsible-section"
+import { useAdminCollapsibleController } from "@/hooks/use-admin-collapsible"
 
 export default function AdminBlackoutDatesPage() {
   const [routes, setRoutes] = useState<any[]>([])
@@ -13,6 +15,8 @@ export default function AdminBlackoutDatesPage() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   
+  const { expandAll, collapseAll, controllerProps } = useAdminCollapsibleController()
+
   const [showForm, setShowForm] = useState(false)
   const [routeId, setRouteId] = useState('')
   const [date, setDate] = useState('')
@@ -30,7 +34,7 @@ export default function AdminBlackoutDatesPage() {
         availabilityResult
       ] = await Promise.all([
         supabase.from('routes').select('*'),
-        supabase.from('route_schedules').select('*'),
+        supabase.from('route_schedules').select('*').order('departure_time', { ascending: true }),
         supabase.from('availability').select('*')
       ])
 
@@ -375,78 +379,87 @@ export default function AdminBlackoutDatesPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {groupedAvailability.map(routeGroup => (
-              <div key={routeGroup.routeName} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-base">{routeGroup.routeName}</h3>
-                </div>
-                <div className="p-6">
-                  <div className="space-y-1">
-                    {routeGroup.records.map(row => (
-                      <div key={row.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 gap-4">
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                          <span className="font-semibold text-slate-900 text-sm">
-                            {row.date}
-                          </span>
-                          
-                          {row.schedule_id ? (
-                            <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-bold tracking-widest shadow-sm">
-                              {row.departureTime}
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
-                              Full Route
-                            </span>
-                          )}
-
-                          {!row.is_available && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 border border-red-200">
-                              Blocked
-                            </span>
-                          )}
-                          
-                          {row.is_available && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-green-100 text-green-700 border border-green-200">
-                              Available
-                            </span>
-                          )}
-
-                          {row.label && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                              {row.label}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 self-end sm:self-auto">
-                          <button
-                            onClick={() => {
-                              setShowForm(true)
-                              setEditingId(row.id)
-                              setRouteId(row.route_id || '')
-                              setDate(row.date || '')
-                              setBlockType(row.schedule_id ? 'schedule' : 'route')
-                              setScheduleId(row.schedule_id || '')
-                              setLabel(row.label || '')
-                              setIsAvailable(row.is_available)
-                            }}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteAvailability(row.id)}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            {groupedAvailability.length > 1 && (
+              <div className="flex justify-end gap-4 pb-2">
+                <button onClick={expandAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Expand all</button>
+                <button onClick={collapseAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Collapse all</button>
               </div>
+            )}
+            {groupedAvailability.map(routeGroup => (
+              <AdminCollapsibleSection
+                key={routeGroup.routeName}
+                title={routeGroup.routeName}
+                count={routeGroup.records.length}
+                countLabel="blackout dates"
+                defaultOpen={groupedAvailability.length === 1}
+                isEditing={routeGroup.records.some(r => r.id === editingId)}
+                controller={controllerProps}
+              >
+                <div className="space-y-1">
+                  {routeGroup.records.map(row => (
+                    <div key={row.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 gap-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <span className="font-semibold text-slate-900 text-sm">
+                          {row.date}
+                        </span>
+                        
+                        {row.schedule_id ? (
+                          <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-bold tracking-widest shadow-sm">
+                            {row.departureTime}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
+                            Full Route
+                          </span>
+                        )}
+
+                        {!row.is_available && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 border border-red-200">
+                            Blocked
+                          </span>
+                        )}
+                        
+                        {row.is_available && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-green-100 text-green-700 border border-green-200">
+                            Available
+                          </span>
+                        )}
+
+                        {row.label && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                            {row.label}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 self-end sm:self-auto">
+                        <button
+                          onClick={() => {
+                            setShowForm(true)
+                            setEditingId(row.id)
+                            setRouteId(row.route_id || '')
+                            setDate(row.date || '')
+                            setBlockType(row.schedule_id ? 'schedule' : 'route')
+                            setScheduleId(row.schedule_id || '')
+                            setLabel(row.label || '')
+                            setIsAvailable(row.is_available)
+                          }}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteAvailability(row.id)}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </AdminCollapsibleSection>
             ))}
           </div>
         )}

@@ -4,6 +4,9 @@ import { useState, useEffect, useMemo } from "react"
 import { PageHeading } from "@/components/ui/page-heading"
 import { supabase } from "@/lib/supabaseClient"
 import { Plus, Trash2, Edit } from "lucide-react"
+import { SchedulePriceOverrides } from "@/components/admin/schedule-price-overrides"
+import { AdminCollapsibleSection } from "@/components/admin/admin-collapsible-section"
+import { useAdminCollapsibleController } from "@/hooks/use-admin-collapsible"
 
 export default function AdminPricingPage() {
   const [routes, setRoutes] = useState<any[]>([])
@@ -13,6 +16,8 @@ export default function AdminPricingPage() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   
+  const { expandAll, collapseAll, controllerProps } = useAdminCollapsibleController()
+
   const [showForm, setShowForm] = useState(false)
   const [routeId, setRouteId] = useState('')
   const [fromStopId, setFromStopId] = useState('')
@@ -226,8 +231,11 @@ export default function AdminPricingPage() {
 
   return (
     <div className="space-y-6">
+      <SchedulePriceOverrides />
+      
+      <div className="pt-12 mt-12 border-t border-slate-200" />
       <div className="flex items-center justify-between">
-        <PageHeading title="Manage Pricing" description="Configure fares between specific stops." />
+        <PageHeading title="Standard Prices" description="Configure default fares between specific stops." />
         <button 
           onClick={() => {
             setShowForm(true)
@@ -364,59 +372,74 @@ export default function AdminPricingPage() {
           </div>
         ) : (
           <div className="space-y-8">
+            {groupedPrices.length > 1 && (
+              <div className="flex justify-end gap-4 pb-2">
+                <button onClick={expandAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Expand all</button>
+                <button onClick={collapseAll} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Collapse all</button>
+              </div>
+            )}
             {groupedPrices.map(routeGroup => (
-              <div key={routeGroup.routeName} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-base">{routeGroup.routeName}</h3>
-                </div>
-                <div className="p-6">
-                  <div className="space-y-1">
-                    {routeGroup.prices.map(row => (
-                      <div key={row.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 gap-4">
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                          <span className="font-medium text-slate-700 text-sm flex items-center gap-2">
-                            {row.fromStopName}
-                            <span className="text-slate-400">→</span>
-                            {row.toStopName}
+              <AdminCollapsibleSection
+                key={routeGroup.routeName}
+                title={routeGroup.routeName}
+                count={routeGroup.prices.length}
+                countLabel="prices"
+                defaultOpen={groupedPrices.length === 1}
+                isEditing={routeGroup.prices.some(p => p.id === editingPriceId)}
+                controller={controllerProps}
+              >
+                <div className="space-y-1">
+                  {routeGroup.prices.map(price => (
+                    <div key={price.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                        <div className="font-medium text-slate-700 text-sm flex items-center gap-2">
+                          <span className="text-slate-500 truncate max-w-[120px]" title={stopsMap.get(price.from_stop_id)?.name || 'Unknown'}>
+                            {stopsMap.get(price.from_stop_id)?.name || 'Unknown'}
                           </span>
-                          <span className="inline-flex items-center px-3 py-1 rounded-md bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
-                            {formatPrice(row.price)}
+                          <span className="text-slate-300 text-xs">→</span>
+                          <span className="text-slate-900 font-semibold truncate max-w-[120px]" title={stopsMap.get(price.to_stop_id)?.name || 'Unknown'}>
+                            {stopsMap.get(price.to_stop_id)?.name || 'Unknown'}
                           </span>
-                          {row.label && (
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 sm:mt-0">
+                          <span className="inline-flex items-center px-2 py-1 rounded bg-slate-900 text-white text-xs font-bold tracking-widest shadow-sm">
+                            {formatPrice(price.price)}
+                          </span>
+                          {price.label && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                              {row.label}
+                              {price.label}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 self-end sm:self-auto">
-                          <button
-                            onClick={() => {
-                              setShowForm(true)
-                              setEditingPriceId(row.id)
-                              setRouteId(row.route_id || '')
-                              setFromStopId(row.from_stop_id || '')
-                              setToStopId(row.to_stop_id || '')
-                              setPrice(row.price ?? '')
-                              setLabel(row.label || '')
-                            }}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deletePrice(row.id)}
-                            className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
                       </div>
-                    ))}
-                  </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setShowForm(true)
+                            setEditingPriceId(price.id)
+                            setRouteId(price.route_id || '')
+                            setFromStopId(price.from_stop_id || '')
+                            setToStopId(price.to_stop_id || '')
+                            setPrice(price.price)
+                            setLabel(price.label || '')
+                          }}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors shrink-0"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deletePrice(price.id)}
+                          className="inline-flex items-center justify-center rounded p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors shrink-0"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              </AdminCollapsibleSection>
             ))}
           </div>
         )}
