@@ -222,7 +222,7 @@ export function SchedulePriceOverrides() {
   }, [overrides, schedulesMap, routesMap, stopsMap])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-12 mt-12 border-t border-slate-200">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-slate-900">Schedule Price Overrides</h2>

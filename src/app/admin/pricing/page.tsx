@@ -231,9 +231,6 @@ export default function AdminPricingPage() {
 
   return (
     <div className="space-y-6">
-      <SchedulePriceOverrides />
-      
-      <div className="pt-12 mt-12 border-t border-slate-200" />
       <div className="flex items-center justify-between">
         <PageHeading title="Standard Prices" description="Configure default fares between specific stops." />
         <button 
@@ -444,6 +441,8 @@ export default function AdminPricingPage() {
           </div>
         )}
       </div>
+
+      <SchedulePriceOverrides />
     </div>
   )
 }
