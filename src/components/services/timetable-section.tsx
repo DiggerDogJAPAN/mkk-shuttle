@@ -41,44 +41,44 @@ export function TimetableSection() {
       {
         "Narita Airport": "-",
         "Haneda Airport": "08:00",
-        "Miyoshi PA": "11:30",
-        "Iiyama Station": "13:00",
-        "Madarao Kogen": "13:30",
-        "Hotel Tangram": "13:50",
+        "Saku PA": "11:30",
+        "Iiyama Station": "12:40",
+        "Madarao Kogen": "13:10",
+        "Hotel Tangram": "13:30",
         "Ikenotaira": "-",
-        "Shin-Akakura": "14:20",
-        "Akakura Kanko": "14:25",
-        "Akakura Onsen": "14:30",
+        "Shin-Akakura": "14:00",
+        "Akakura Kanko": "14:05",
+        "Akakura Onsen": "14:10",
         "Price Narita": "-",
-        "Price Haneda": "¥11,000"
+        "Price Haneda": "¥11,500"
       },
       {
         "Narita Airport": "10:00",
         "Haneda Airport": "10:30",
-        "Miyoshi PA": "14:00",
-        "Iiyama Station": "15:30",
-        "Madarao Kogen": "16:00",
-        "Hotel Tangram": "16:20",
+        "Saku PA": "14:00",
+        "Iiyama Station": "15:10",
+        "Madarao Kogen": "15:40",
+        "Hotel Tangram": "16:00",
         "Ikenotaira": "-",
-        "Shin-Akakura": "16:50",
-        "Akakura Kanko": "16:55",
-        "Akakura Onsen": "17:00",
-        "Price Narita": "¥12,000",
-        "Price Haneda": "¥11,000"
+        "Shin-Akakura": "16:30",
+        "Akakura Kanko": "16:35",
+        "Akakura Onsen": "16:40",
+        "Price Narita": "¥12,500",
+        "Price Haneda": "¥11,500"
       },
       {
         "Narita Airport": "21:20",
         "Haneda Airport": "22:20",
-        "Miyoshi PA": "-",
+        "Saku PA": "-",
         "Iiyama Station": "-",
-        "Madarao Kogen": "07:35*",
-        "Hotel Tangram": "08:00*",
-        "Ikenotaira": "08:30*",
-        "Shin-Akakura": "08:40*",
+        "Madarao Kogen": "07:25*",
+        "Hotel Tangram": "07:50*",
+        "Ikenotaira": "08:20*",
+        "Shin-Akakura": "08:30*",
         "Akakura Kanko": "-",
-        "Akakura Onsen": "08:45*",
-        "Price Narita": "¥13,000",
-        "Price Haneda": "¥12,000"
+        "Akakura Onsen": "08:35*",
+        "Price Narita": "¥13,500",
+        "Price Haneda": "¥12,500"
       }
     ],
     notes: [
@@ -107,13 +107,13 @@ export function TimetableSection() {
         "Tangram Madarao": "08:30",
         "Madarao Kogen": "08:40",
         "Iiyama Station": "09:10",
-        "Miyoshi PA": "10:30",
+        "Saku PA": "11:00",
         "Tokyo Terminal": "14:30",
         "Haneda Airport": "15:10",
         "Narita Airport": "15:30",
-        "Price Narita": "¥12,000",
-        "Price Haneda": "¥11,000",
-        "Price Tokyo": "¥9,000"
+        "Price Narita": "¥12,500",
+        "Price Haneda": "¥11,500",
+        "Price Tokyo": "¥9,500"
       },
       {
         "Akakura Onsen": "10:00",
@@ -123,13 +123,13 @@ export function TimetableSection() {
         "Tangram Madarao": "10:30",
         "Madarao Kogen": "10:40",
         "Iiyama Station": "11:10",
-        "Miyoshi PA": "12:30",
-        "Tokyo Terminal": "16:30",
-        "Haneda Airport": "17:10",
-        "Narita Airport": "17:30",
-        "Price Narita": "¥12,000",
-        "Price Haneda": "¥11,000",
-        "Price Tokyo": "¥9,000"
+        "Saku PA": "13:00",
+        "Tokyo Terminal": "-",
+        "Haneda Airport": "-",
+        "Narita Airport": "17:00",
+        "Price Narita": "¥12,500",
+        "Price Haneda": "-",
+        "Price Tokyo": "-"
       },
       {
         "Akakura Onsen": "14:20",
@@ -139,13 +139,13 @@ export function TimetableSection() {
         "Tangram Madarao": "15:05",
         "Madarao Kogen": "15:40",
         "Iiyama Station": "-",
-        "Miyoshi PA": "-",
+        "Saku PA": "-",
         "Tokyo Terminal": "21:36",
         "Haneda Airport": "-",
         "Narita Airport": "-",
         "Price Narita": "-",
-        "Price Haneda": "¥11,000",
-        "Price Tokyo": "¥9,000"
+        "Price Haneda": "-",
+        "Price Tokyo": "¥9,500"
       }
     ],
     notes: [

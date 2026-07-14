@@ -66,7 +66,7 @@ export default function NaritaHanedaPage() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-tight">Narita Airport</p>
-                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥10,000</span></p>
+                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥12,500</span></p>
                   </div>
                 </div>
 
@@ -76,7 +76,7 @@ export default function NaritaHanedaPage() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-tight">Haneda Airport</p>
-                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥11,000</span></p>
+                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥11,500</span></p>
                   </div>
                 </div>
               </div>

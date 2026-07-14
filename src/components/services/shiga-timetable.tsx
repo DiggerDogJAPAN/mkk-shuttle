@@ -41,19 +41,19 @@ export function ShigaTimetable() {
       {
         "Narita Airport": "10:00",
         "Haneda Airport": "10:30",
-        "Miyoshi PA": "14:00",
-        "Yomase Onsen": "15:40",
-        "Ryuo / Kita-Shiga Ryuo": "15:50",
-        "Yamanouchi": "16:10",
-        "Maruike / Hasuike": "16:30",
-        "Ichinose A": "16:40",
-        "Ichinose B": "16:45",
-        "Yakebitai West": "16:50",
-        "Yakebitai South": "16:55",
-        "Yakebitai East": "17:00",
-        "Okushiga": "17:15",
-        "Price Narita": "¥12,000",
-        "Price Haneda": "¥11,000"
+        "Saku PA": "14:10",
+        "Yomase Onsen": "15:20",
+        "Ryuo / Kita-Shiga Ryuo": "15:30",
+        "Yamanouchi": "15:50",
+        "Maruike / Hasuike": "16:10",
+        "Ichinose A": "16:20",
+        "Ichinose B": "16:25",
+        "Yakebitai West": "16:30",
+        "Yakebitai South": "16:35",
+        "Yakebitai East": "16:40",
+        "Okushiga": "16:55",
+        "Price Narita": "¥12,500",
+        "Price Haneda": "¥11,500"
       }
     ],
     notes: [
@@ -83,12 +83,12 @@ export function ShigaTimetable() {
         "Yamanouchi": "08:50",
         "Ryuo / Kita-Shiga Ryuo": "09:10",
         "Yomase Onsen": "09:20",
-        "Miyoshi PA": "11:00",
+        "Saku PA": "11:00",
         "Tokyo Terminal": "14:30",
         "Haneda Airport": "15:10",
         "Narita Airport": "15:30",
-        "Price Narita": "¥12,000",
-        "Price Haneda": "¥11,000"
+        "Price Narita": "¥12,500",
+        "Price Haneda": "¥11,500"
       }
     ],
     notes: [
