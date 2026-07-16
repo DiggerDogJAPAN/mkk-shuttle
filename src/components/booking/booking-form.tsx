@@ -40,7 +40,7 @@ function getEarliestBookingDateString() {
 }
 
 const SEASON_START = '2026-12-15'
-const SEASON_END = '2027-03-31'
+const SEASON_END = '2027-03-13'
 
 export function BookingForm() {
   const router = useRouter()
@@ -205,7 +205,7 @@ export function BookingForm() {
       }
 
       if (travelDate < SEASON_START || travelDate > SEASON_END) {
-        alert('Bookings are currently available from December 15, 2026 to March 31, 2027.')
+        alert('Bookings are currently available from December 15, 2026 to March 13, 2027.')
         setBookingLoading(false)
         return
       }
