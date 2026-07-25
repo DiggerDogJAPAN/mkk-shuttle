@@ -1,27 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { supabase } from '@/lib/supabaseClient'
+import { TurnstileWidget } from '@/components/auth/turnstile-widget'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
 
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!captchaToken) {
+      alert('Please complete the human verification before submitting.')
+      return
+    }
+
     setLoading(true)
 
     const { error } = await supabase.auth.resetPasswordForEmail(
       email,
       {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}/reset-password`,
+        captchaToken
       }
     )
 
     setLoading(false)
 
     if (error) {
-      alert(error.message)
+      if (error.message.toLowerCase().includes('captcha') || error.message.toLowerCase().includes('verification')) {
+        alert('Human verification failed. Please try again.')
+      } else {
+        alert(error.message)
+      }
+      turnstileRef.current?.reset()
+      setCaptchaToken(null)
       return
     }
 
@@ -44,9 +61,23 @@ export default function ForgotPasswordPage() {
             required
           />
 
+          <TurnstileWidget
+            turnstileRef={turnstileRef}
+            action="forgot_password"
+            onSuccess={(token) => setCaptchaToken(token)}
+            onExpire={() => {
+              setCaptchaToken(null)
+              alert('The verification expired. Please complete it again.')
+            }}
+            onError={() => {
+              setCaptchaToken(null)
+              alert('Human verification failed. Please try again.')
+            }}
+          />
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !captchaToken}
             className="w-full bg-black text-white py-3 rounded-lg disabled:opacity-50"
           >
             {loading ? 'Sending...' : 'Send Reset Link'}

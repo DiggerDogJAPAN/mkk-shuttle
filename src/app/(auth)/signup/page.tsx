@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { TurnstileWidget } from '@/components/auth/turnstile-widget'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 import { supabase } from '@/lib/supabaseClient'
 import { toast } from 'sonner'
 
@@ -15,9 +17,16 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!captchaToken) {
+      toast.error('Please complete the human verification before creating your account.')
+      return
+    }
 
     if (password !== confirmPassword) {
       toast.error('Passwords do not match')
@@ -31,6 +40,7 @@ export default function SignupPage() {
         email,
         password,
         options: {
+          captchaToken,
           data: {
             first_name: firstName,
             last_name: lastName,
@@ -40,7 +50,13 @@ export default function SignupPage() {
       })
 
       if (error) {
-        toast.error(error.message)
+        if (error.message.toLowerCase().includes('captcha') || error.message.toLowerCase().includes('verification')) {
+          toast.error('Human verification failed. Please try again.')
+        } else {
+          toast.error(error.message)
+        }
+        turnstileRef.current?.reset()
+        setCaptchaToken(null)
         return
       }
 
@@ -51,6 +67,8 @@ export default function SignupPage() {
     } catch (err) {
       console.error(err)
       toast.error('Something went wrong during signup.')
+      turnstileRef.current?.reset()
+      setCaptchaToken(null)
     } finally {
       setLoading(false)
     }
@@ -122,9 +140,23 @@ export default function SignupPage() {
             required
           />
 
+          <TurnstileWidget
+            turnstileRef={turnstileRef}
+            action="signup"
+            onSuccess={(token) => setCaptchaToken(token)}
+            onExpire={() => {
+              setCaptchaToken(null)
+              toast.error('The verification expired. Please complete it again.')
+            }}
+            onError={() => {
+              setCaptchaToken(null)
+              toast.error('Human verification failed. Please try again.')
+            }}
+          />
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !captchaToken}
             className="w-full bg-black text-white py-3 rounded-lg disabled:opacity-50"
           >
             {loading ? 'Creating Account...' : 'Create Account'}

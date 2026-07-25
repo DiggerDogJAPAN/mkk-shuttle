@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { TurnstileWidget } from '@/components/auth/turnstile-widget'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function LoginPage() {
@@ -11,9 +13,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
 
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!captchaToken) {
+      alert('Please complete the human verification before logging in.')
+      return
+    }
 
     try {
       setLoading(true)
@@ -21,10 +30,17 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: { captchaToken }
       })
 
       if (error) {
-        alert(error.message)
+        if (error.message.toLowerCase().includes('captcha') || error.message.toLowerCase().includes('verification')) {
+          alert('Human verification failed. Please try again.')
+        } else {
+          alert(error.message)
+        }
+        turnstileRef.current?.reset()
+        setCaptchaToken(null)
         return
       }
 
@@ -32,6 +48,8 @@ export default function LoginPage() {
     } catch (err) {
       console.error(err)
       alert('Something went wrong')
+      turnstileRef.current?.reset()
+      setCaptchaToken(null)
     } finally {
       setLoading(false)
     }
@@ -81,9 +99,23 @@ export default function LoginPage() {
             </a>
           </div>
 
+          <TurnstileWidget
+            turnstileRef={turnstileRef}
+            action="login"
+            onSuccess={(token) => setCaptchaToken(token)}
+            onExpire={() => {
+              setCaptchaToken(null)
+              alert('The verification expired. Please complete it again.')
+            }}
+            onError={() => {
+              setCaptchaToken(null)
+              alert('Human verification failed. Please try again.')
+            }}
+          />
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !captchaToken}
             className="w-full bg-black text-white py-3 rounded-lg disabled:opacity-50"
           >
             {loading ? 'Logging In...' : 'Log In'}
