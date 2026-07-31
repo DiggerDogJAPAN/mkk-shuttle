@@ -56,6 +56,9 @@ export function BookingForm() {
   const [blockedRouteIds, setBlockedRouteIds] = useState<string[]>([])
   const [bookingLoading, setBookingLoading] = useState(false)
 
+  const [isValidatingDestinations, setIsValidatingDestinations] = useState(false)
+  const [validArrivalStops, setValidArrivalStops] = useState<any[]>([])
+
   const [passengers, setPassengers] = useState(1)
 
   const [firstName, setFirstName] = useState('')
@@ -174,9 +177,49 @@ export function BookingForm() {
     setArrival(null)
   }
 
-  const validArrivalStops = stops.filter(
-    (s) => departure && s.stop_order > departure.stop_order
-  )
+  useEffect(() => {
+    const validateDestinations = async () => {
+      if (!departure || !selectedSchedule) {
+        setValidArrivalStops([])
+        return
+      }
+
+      setIsValidatingDestinations(true)
+
+      const candidates = stops.filter(
+        (s) => s.stop_order > departure.stop_order
+      )
+
+      const validationPromises = candidates.map(async (candidate) => {
+        const result = await resolveJourneyPrice({
+          supabase,
+          scheduleId: selectedSchedule.id,
+          fromStopId: departure.id,
+          toStopId: candidate.id,
+        })
+        return { candidate, isValid: !!result }
+      })
+
+      const results = await Promise.all(validationPromises)
+      const validatedStops = results.filter(r => r.isValid).map(r => r.candidate)
+
+      setValidArrivalStops(validatedStops)
+      setIsValidatingDestinations(false)
+    }
+
+    validateDestinations()
+  }, [departure, selectedSchedule, stops])
+
+  useEffect(() => {
+    if (arrival) {
+      if (!isValidatingDestinations) {
+        const isStillValid = validArrivalStops.some(s => s.id === arrival.id)
+        if (!isStillValid) {
+          setArrival(null)
+        }
+      }
+    }
+  }, [validArrivalStops, isValidatingDestinations, arrival])
 
   const totalPrice = price
     ? price * passengers
@@ -249,23 +292,6 @@ export function BookingForm() {
         status: 'pending',
       }
 
-      const { data, error } = await supabase
-        .from('bookings')
-        .insert(bookingPayload)
-        .select()
-
-      if (error) {
-        alert('Booking failed. Please try again.')
-        return
-      }
-
-      const newBooking = data?.[0]
-
-      if (!newBooking?.id) {
-        alert('Booking created but booking ID was not returned')
-        return
-      }
-
       const checkoutResponse = await fetch('/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -273,7 +299,7 @@ export function BookingForm() {
           'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
-          bookingId: newBooking.id,
+          bookingPayload,
         }),
       })
 
@@ -421,7 +447,6 @@ export function BookingForm() {
                     onChange={(e) => {
                       const stop = stops.find(s => s.id === e.target.value)
                       setDeparture(stop)
-                      setArrival(null)
                     }}
                     className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 appearance-none"
                     required
@@ -447,10 +472,17 @@ export function BookingForm() {
                       const stop = stops.find(s => s.id === e.target.value)
                       setArrival(stop)
                     }}
-                    className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 appearance-none"
+                    disabled={isValidatingDestinations || validArrivalStops.length === 0}
+                    className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                     required
                   >
-                    <option value="">Select Arrival</option>
+                    <option value="">
+                      {isValidatingDestinations 
+                        ? "Checking available routes..." 
+                        : validArrivalStops.length === 0 
+                          ? "No available drop-off points for this pickup location."
+                          : "Select Arrival"}
+                    </option>
                     {validArrivalStops.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}

@@ -32,26 +32,41 @@ export function ShigaTimetable() {
   const toShigaData: TimetableData = {
     title: "Narita / Haneda Airport to Shiga Kogen",
     columns: [
-      "Narita Airport", "Haneda Airport", "Miyoshi PA", "Yomase Onsen",
-      "Ryuo / Kita-Shiga Ryuo", "Yamanouchi", "Maruike / Hasuike", "Ichinose A",
-      "Ichinose B", "Yakebitai West", "Yakebitai South", "Yakebitai East",
-      "Okushiga", "Price Narita", "Price Haneda"
+      "Narita Airport", "Haneda Airport", "Yamanouchi", "Maruike / Hasuike",
+      "Hotaru Onsen", "Takamagahara", "Ichinose A", "Ichinose B",
+      "Yakebitai West", "Yakebitai South", "Yakebitai East", "Okushiga",
+      "Price Narita", "Price Haneda"
     ],
     rows: [
       {
         "Narita Airport": "10:00",
         "Haneda Airport": "10:30",
-        "Saku PA": "14:10",
-        "Yomase Onsen": "15:20",
-        "Ryuo / Kita-Shiga Ryuo": "15:30",
         "Yamanouchi": "15:50",
         "Maruike / Hasuike": "16:10",
+        "Hotaru Onsen": "-",
+        "Takamagahara": "-",
         "Ichinose A": "16:20",
         "Ichinose B": "16:25",
         "Yakebitai West": "16:30",
         "Yakebitai South": "16:35",
         "Yakebitai East": "16:40",
         "Okushiga": "16:55",
+        "Price Narita": "¥12,500",
+        "Price Haneda": "¥11,500"
+      },
+      {
+        "Narita Airport": "21:20",
+        "Haneda Airport": "22:20",
+        "Yamanouchi": "-",
+        "Maruike / Hasuike": "6:45",
+        "Hotaru Onsen": "6:50",
+        "Takamagahara": "6:55",
+        "Ichinose A": "7:00",
+        "Ichinose B": "7:05",
+        "Yakebitai West": "7:10",
+        "Yakebitai South": "7:15",
+        "Yakebitai East": "7:20",
+        "Okushiga": "-",
         "Price Narita": "¥12,500",
         "Price Haneda": "¥11,500"
       }
@@ -66,9 +81,9 @@ export function ShigaTimetable() {
     title: "Shiga Kogen to Haneda / Narita Airport",
     columns: [
       "Okushiga", "Yakebitai East", "Yakebitai South", "Yakebitai West",
-      "Ichinose B", "Ichinose A", "Maruike / Hasuike", "Yamanouchi",
-      "Ryuo / Kita-Shiga Ryuo", "Yomase Onsen", "Miyoshi PA",
-      "Tokyo Terminal", "Haneda Airport", "Narita Airport",
+      "Ichinose B", "Ichinose A", "Takamagahara", "Hotaru Onsen",
+      "Maruike / Hasuike", "Yamanouchi", "Tokyo Terminal",
+      "Haneda Airport", "Narita Airport",
       "Price Narita", "Price Haneda"
     ],
     rows: [
@@ -79,16 +94,32 @@ export function ShigaTimetable() {
         "Yakebitai West": "08:15",
         "Ichinose B": "08:20",
         "Ichinose A": "08:23",
+        "Takamagahara": "-",
+        "Hotaru Onsen": "-",
         "Maruike / Hasuike": "08:30",
         "Yamanouchi": "08:50",
-        "Ryuo / Kita-Shiga Ryuo": "09:10",
-        "Yomase Onsen": "09:20",
-        "Saku PA": "11:00",
         "Tokyo Terminal": "14:30",
         "Haneda Airport": "15:10",
         "Narita Airport": "15:30",
         "Price Narita": "¥12,500",
         "Price Haneda": "¥11,500"
+      },
+      {
+        "Okushiga": "-",
+        "Yakebitai East": "15:30",
+        "Yakebitai South": "15:35",
+        "Yakebitai West": "15:40",
+        "Ichinose B": "15:45",
+        "Ichinose A": "15:50",
+        "Takamagahara": "15:55",
+        "Hotaru Onsen": "16:00",
+        "Maruike / Hasuike": "16:05",
+        "Yamanouchi": "-",
+        "Tokyo Terminal": "21:42",
+        "Haneda Airport": "-",
+        "Narita Airport": "-",
+        "Price Narita": "-",
+        "Price Haneda": "-"
       }
     ],
     notes: [
