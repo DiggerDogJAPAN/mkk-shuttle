@@ -37,10 +37,10 @@ export async function POST(request: Request) {
     }
 
     const SEASON_START = '2026-12-15'
-    const SEASON_END = '2027-03-31'
+    const SEASON_END = '2027-03-13'
     if (bookingPayload.travel_date < SEASON_START || bookingPayload.travel_date > SEASON_END) {
       return NextResponse.json(
-        { error: 'Bookings are currently available from December 15, 2026 to March 31, 2027.' },
+        { error: 'Bookings are currently available from December 15, 2026 to March 13, 2027.' },
         { status: 400 }
       )
     }
@@ -93,8 +93,8 @@ export async function POST(request: Request) {
       .eq('is_available', false)
 
     if (blockedData) {
-      const isBlocked = blockedData.some(b => 
-        b.schedule_id === bookingPayload.schedule_id || 
+      const isBlocked = blockedData.some(b =>
+        b.schedule_id === bookingPayload.schedule_id ||
         (!b.schedule_id && b.route_id === bookingPayload.route_id)
       )
       if (isBlocked) {

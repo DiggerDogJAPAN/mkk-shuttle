@@ -156,6 +156,14 @@ export function BookingForm() {
         .filter((item) => !item.schedule_id)
         .map((item) => item.route_id)
 
+      if (routes.length > 0 && blockedRoutes.length >= routes.length) {
+        alert("This date is not available. Please choose another date.")
+        setTravelDate('')
+        setBlockedScheduleIds([])
+        setBlockedRouteIds([])
+        return
+      }
+
       setBlockedScheduleIds(blockedSchedules)
       setBlockedRouteIds(blockedRoutes)
     }
@@ -329,7 +337,7 @@ export function BookingForm() {
     <div className="flex flex-col lg:flex-row gap-12 items-start">
       {/* Left Side: Booking Form */}
       <div className="w-full lg:w-[70%]">
-        <form 
+        <form
           className="bg-white rounded-[2.5rem] border border-slate-100 p-8 md:p-12 shadow-sm space-y-12"
           onSubmit={(e) => {
             e.preventDefault()
@@ -353,7 +361,7 @@ export function BookingForm() {
                 Sign up
               </a>
             </div>
-            
+
             <div className="space-y-6">
               {/* Travel Date */}
               <div className="space-y-2">
@@ -366,7 +374,20 @@ export function BookingForm() {
                   min={getEarliestBookingDateString() > SEASON_START ? getEarliestBookingDateString() : SEASON_START}
                   max={SEASON_END}
                   onChange={(e) => {
-                    setTravelDate(e.target.value)
+                    const selected = e.target.value
+                    if (!selected) {
+                      setTravelDate('')
+                      return
+                    }
+
+                    const minDate = getEarliestBookingDateString() > SEASON_START ? getEarliestBookingDateString() : SEASON_START
+                    if (selected < minDate || selected > SEASON_END) {
+                      alert("This date is not available. Please choose another date.")
+                      setTravelDate('')
+                      return
+                    }
+
+                    setTravelDate(selected)
                     setSelectedRoute(null)
                     setSelectedSchedule(null)
                     setStops([])
@@ -402,10 +423,10 @@ export function BookingForm() {
                     {routes
                       .filter((r) => !blockedRouteIds.includes(r.id))
                       .map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {`${r.from_location} to ${r.to_location}`}
-                      </option>
-                    ))}
+                        <option key={r.id} value={r.id}>
+                          {`${r.from_location} to ${r.to_location}`}
+                        </option>
+                      ))}
                   </select>
                 </div>
               )}
@@ -429,10 +450,10 @@ export function BookingForm() {
                       .filter((s: any) => !blockedScheduleIds.includes(s.id))
                       .sort((a: any, b: any) => a.departure_time.localeCompare(b.departure_time))
                       .map((s: any) => (
-                      <option key={s.id} value={s.id}>
-                        {formatTime(s.departure_time)}
-                      </option>
-                    ))}
+                        <option key={s.id} value={s.id}>
+                          {formatTime(s.departure_time)}
+                        </option>
+                      ))}
                   </select>
                 </div>
               )}
@@ -477,9 +498,9 @@ export function BookingForm() {
                     required
                   >
                     <option value="">
-                      {isValidatingDestinations 
-                        ? "Checking available routes..." 
-                        : validArrivalStops.length === 0 
+                      {isValidatingDestinations
+                        ? "Checking available routes..."
+                        : validArrivalStops.length === 0
                           ? "No available drop-off points for this pickup location."
                           : "Select Arrival"}
                     </option>
@@ -503,7 +524,7 @@ export function BookingForm() {
                     onChange={(e) => setPassengers(Number(e.target.value))}
                     className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 appearance-none"
                   >
-                    {[1,2,3,4,5,6,7,8].map((n) => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                       <option key={n} value={n}>
                         {n} Passenger{n > 1 ? 's' : ''}
                       </option>
@@ -528,7 +549,7 @@ export function BookingForm() {
           {price && (
             <div className="pt-12 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-500">
               <h2 className="text-2xl font-bold text-slate-900 mb-8">Customer Details</h2>
-              
+
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">First Name</label>
@@ -647,9 +668,9 @@ export function BookingForm() {
                     </span>
                     Cancellation & Refund Policy
                   </h3>
-                  <a 
-                    href="/terms-conditions#cancellations-and-refunds" 
-                    target="_blank" 
+                  <a
+                    href="/terms-conditions#cancellations-and-refunds"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-[10px] font-bold text-primary uppercase tracking-wider hover:underline"
                   >
@@ -774,7 +795,7 @@ export function BookingForm() {
 
       {/* Right Side: Sticky Summary */}
       <div className="w-full lg:w-[30%] lg:pl-4">
-        <BookingSummarySidebar 
+        <BookingSummarySidebar
           selectedRoute={selectedRoute}
           selectedSchedule={selectedSchedule}
           departure={departure}
