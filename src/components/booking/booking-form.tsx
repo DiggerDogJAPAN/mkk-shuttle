@@ -734,8 +734,7 @@ export function BookingForm() {
                     />
                   </div>
                   <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors leading-relaxed">
-                    I understand the{" "}
-                    <a href="/terms-conditions#cancellations-and-refunds" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold">refund policy</a>
+                    I understand the refund policy.
                   </span>
                 </label>
               </div>
