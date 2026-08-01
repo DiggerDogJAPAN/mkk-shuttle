@@ -70,7 +70,12 @@ export async function POST(request: Request) {
     // Validate stops
     const { data: stopsData, error: stopsError } = await supabaseAdmin
       .from('schedule_stops')
-      .select('stop_id, stop_order')
+      .select(`
+        stop_id,
+        stop:stops (
+          stop_order
+        )
+      `)
       .eq('schedule_id', bookingPayload.schedule_id)
       .in('stop_id', [bookingPayload.from_stop_id, bookingPayload.to_stop_id])
 
@@ -81,7 +86,12 @@ export async function POST(request: Request) {
     const fromStop = stopsData.find(s => s.stop_id === bookingPayload.from_stop_id)
     const toStop = stopsData.find(s => s.stop_id === bookingPayload.to_stop_id)
 
-    if (!fromStop || !toStop || fromStop.stop_order >= toStop.stop_order) {
+    // @ts-ignore - type inference for joined table might be loose
+    const fromOrder = fromStop?.stop?.stop_order ?? fromStop?.stop?.[0]?.stop_order
+    // @ts-ignore
+    const toOrder = toStop?.stop?.stop_order ?? toStop?.stop?.[0]?.stop_order
+
+    if (fromOrder == null || toOrder == null || fromOrder >= toOrder) {
       return NextResponse.json({ error: 'Invalid stop order' }, { status: 400 })
     }
 
