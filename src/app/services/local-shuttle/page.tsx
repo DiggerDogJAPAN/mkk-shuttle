@@ -52,7 +52,7 @@ export default function LocalShuttlePage() {
                   Local Shuttle Services <span className="text-primary">Around Mt. Myoko</span>
                 </h1>
                 <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">
-                  Convenient local shuttle transportation between Myoko Kogen Station, Akakura, Ikenotaira, Suginohara, Tangram, Madarao, and surrounding resort areas during the winter season.
+                  Convenient local shuttle transportation between Myoko Kogen Station, Akakura, Ikenotaira, Suginohara, Tangram, and surrounding resort areas during the winter season.
                 </p>
               </div>
 
@@ -64,17 +64,7 @@ export default function LocalShuttlePage() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-tight">Local Routes</p>
-                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥500</span></p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100 group transition-all hover:border-primary/30 hover:shadow-md">
-                  <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 transition-colors">
-                    <Mountain className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-slate-500 uppercase tracking-tight">Resort Transfers</p>
-                    <p className="text-xl font-bold text-slate-900">Up to <span className="text-primary">¥3,500</span></p>
+                    <p className="text-xl font-bold text-slate-900">From <span className="text-primary">¥1,100</span></p>
                   </div>
                 </div>
               </div>

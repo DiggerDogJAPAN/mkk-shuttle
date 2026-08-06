@@ -1,14 +1,14 @@
 "use client"
 
 import { Container } from "@/components/ui/container"
-import { 
-  MapPin, 
-  Mountain, 
-  Hotel, 
-  Train, 
-  ArrowRight, 
-  ExternalLink, 
-  Info, 
+import {
+  MapPin,
+  Mountain,
+  Hotel,
+  Train,
+  ArrowRight,
+  ExternalLink,
+  Info,
   AlertTriangle,
   Bus
 } from "lucide-react"
@@ -27,6 +27,21 @@ type RouteGroup = {
   stops: BusStop[];
 }
 
+export const shuttleStopLocations: Record<string, string> = {
+  "Myoko Kogen Bus Terminal": "https://maps.app.goo.gl/tD1kc24U86BhTL8t5",
+  "Akakura Onsen Ski Area": "https://maps.app.goo.gl/kr35Gixuj7hAB8dT6",
+  "Akakura Kanko Resort Ski Area": "https://maps.app.goo.gl/r98MhZmtHUdUSd5h7",
+  "Hotel Windsor": "https://maps.app.goo.gl/AYexvTF3rSdbLFcw8",
+  "Ikenotaira Alpen Blick Spa": "https://maps.app.goo.gl/zjxR1BAdxXP93Saf7",
+  "Ikenotaira Ski Area": "https://maps.app.goo.gl/pXap8inyQguqTiXW7",
+  "Ikenotaira Tourist Association": "https://maps.app.goo.gl/9qwXcPEVLLby8j4F7",
+  "Lime Resort": "https://maps.app.goo.gl/p4bMSBWq1sKiKMzC9",
+  "Suginosawa Fire Hut": "https://maps.app.goo.gl/g4AbSgrQnTtn1kSw6",
+  "Suginohara Ski Area": "https://maps.app.goo.gl/WBeJ8bbaEHLkpvRQ6",
+  "Tangram": "https://maps.app.goo.gl/ngvzz9Wd3nbjgU4x8",
+  "Lotte Arai Resort": "https://maps.app.goo.gl/YxYU7oVrSRvohaFg9",
+}
+
 export function LocalBusStops() {
   const routes: RouteGroup[] = [
     {
@@ -42,14 +57,14 @@ export function LocalBusStops() {
         { title: "Ikenotaira Ski Area", type: "resort" },
         { title: "Ikenotaira Tourist Association", type: "station" },
         { title: "Lime Resort", type: "hotel" },
-        { title: "Suginozawa Fire Hut", type: "station" },
+        { title: "Suginosawa Fire Hut", type: "station" },
         { title: "Suginohara Ski Area", type: "resort" },
       ]
     },
     {
-      title: "Lotte Arai / Akakura / Madarao Line",
+      title: "Lotte Arai / Akakura / Tangram Line",
       status: "suspended",
-      flow: ["Lotte Arai", "Akakura", "Bus Terminal", "Tangram", "Madarao"],
+      flow: ["Lotte Arai", "Akakura", "Bus Terminal", "Tangram"],
       stops: [
         { title: "Lotte Arai Resort", type: "resort" },
         { title: "Akakura Onsen Ski Area", type: "resort" },
@@ -57,7 +72,6 @@ export function LocalBusStops() {
         { title: "Hotel Windsor", type: "hotel" },
         { title: "Myoko Kogen Bus Terminal", type: "station" },
         { title: "Tangram", type: "resort" },
-        { title: "Madarao Kogen Hotel", type: "hotel" },
       ]
     }
   ]
@@ -125,32 +139,36 @@ export function LocalBusStops() {
 
                 {/* Stop Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {route.stops.map((stop, sIdx) => (
-                    <div key={sIdx} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-all group flex flex-col h-full">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
-                          {getIcon(stop.type)}
+                  {route.stops.map((stop, sIdx) => {
+                    const mapUrl = stop.externalLink || shuttleStopLocations[stop.title];
+                    return (
+                      <div key={sIdx} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-all group flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
+                            {getIcon(stop.type)}
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-900 leading-tight">{stop.title}</h4>
                         </div>
-                        <h4 className="text-sm font-bold text-slate-900 leading-tight">{stop.title}</h4>
+
+                        <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
+                          {mapUrl ? (
+                            <a
+                              href={mapUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`View ${stop.title} on Google Maps`}
+                              className="text-xs font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
+                            >
+                              View on Google Maps
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">Location Coming Soon</span>
+                          )}
+                        </div>
                       </div>
-                      
-                      <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-                        {stop.externalLink ? (
-                          <a 
-                            href={stop.externalLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
-                          >
-                            View Map
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        ) : (
-                          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">Location Coming Soon</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}

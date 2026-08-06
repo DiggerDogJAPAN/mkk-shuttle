@@ -52,6 +52,7 @@ export function BookingForm() {
   const [arrival, setArrival] = useState<any>(null)
   const [price, setPrice] = useState<number | null>(null)
   const [travelDate, setTravelDate] = useState('')
+  const [dateError, setDateError] = useState<string | null>(null)
   const [blockedScheduleIds, setBlockedScheduleIds] = useState<string[]>([])
   const [blockedRouteIds, setBlockedRouteIds] = useState<string[]>([])
   const [bookingLoading, setBookingLoading] = useState(false)
@@ -249,6 +250,14 @@ export function BookingForm() {
         return
       }
 
+      if (dateError) {
+        const dateInput = document.getElementById('travel-date')
+        dateInput?.focus()
+        dateInput?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        setBookingLoading(false)
+        return
+      }
+
       if (isBeforeEarliestBookingDate(travelDate)) {
         alert('Please select a travel date at least 13 days from today.')
         setBookingLoading(false)
@@ -369,24 +378,33 @@ export function BookingForm() {
                   Travel Date
                 </label>
                 <input
+                  id="travel-date"
                   type="date"
                   value={travelDate}
-                  min={getEarliestBookingDateString() > SEASON_START ? getEarliestBookingDateString() : SEASON_START}
                   max={SEASON_END}
+                  aria-invalid={Boolean(dateError)}
+                  aria-describedby={dateError ? "travel-date-error" : undefined}
                   onChange={(e) => {
                     const selected = e.target.value
                     if (!selected) {
                       setTravelDate('')
+                      setDateError(null)
                       return
                     }
 
                     const minDate = getEarliestBookingDateString() > SEASON_START ? getEarliestBookingDateString() : SEASON_START
+                    if (selected < SEASON_START) {
+                      setDateError("Bookings are available from 20 December 2026. Please select a later date.")
+                      setTravelDate(selected)
+                      return
+                    }
                     if (selected < minDate || selected > SEASON_END) {
-                      alert("This date is not available. Please choose another date.")
-                      setTravelDate('')
+                      setDateError("This date is not available. Please choose another date.")
+                      setTravelDate(selected)
                       return
                     }
 
+                    setDateError(null)
                     setTravelDate(selected)
                     setSelectedRoute(null)
                     setSelectedSchedule(null)
@@ -398,13 +416,25 @@ export function BookingForm() {
                   className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900"
                   required
                 />
-                <p className="text-xs text-slate-500 font-medium ml-1">
-                  Bookings must be made at least 13 days in advance.
-                </p>
+                {dateError && (
+                  <p
+                    id="travel-date-error"
+                    role="alert"
+                    aria-live="polite"
+                    className="text-sm text-red-600 font-medium ml-1"
+                  >
+                    {dateError}
+                  </p>
+                )}
+                {!dateError && (
+                  <p className="text-xs text-slate-500 font-medium ml-1">
+                    Bookings must be made at least 13 days in advance.
+                  </p>
+                )}
               </div>
 
               {/* Route */}
-              {travelDate && (
+              {travelDate && !dateError && (
                 <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                   <label className="text-sm font-bold text-slate-700 uppercase tracking-wider ml-1">
                     Service Route

@@ -3,15 +3,13 @@
 import { useState } from "react"
 import { Container } from "@/components/ui/container"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Calendar, 
-  Clock, 
-  ArrowRight, 
-  AlertTriangle, 
-  Info, 
-  ChevronRight,
+import {
+  Calendar,
+  Clock,
+  ArrowRight,
+  AlertTriangle,
+  Info,
   CreditCard,
-  MapPin,
   Mountain
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -21,15 +19,18 @@ type TimetableRow = {
   times: string[];
 }
 
+type DirectionData = {
+  label: string;
+  columns: string[];
+  rows: TimetableRow[];
+  notes?: string[];
+}
+
 type RouteData = {
   title: string;
   period: string;
   fare: string;
-  directions: {
-    label: string;
-    columns: string[];
-    rows: TimetableRow[];
-  }[];
+  directions: DirectionData[];
   notes: string[];
   status?: "active" | "suspended";
 }
@@ -41,46 +42,56 @@ export function LocalTimetable() {
   const routes: RouteData[] = [
     {
       title: "Akakura - Ikenotaira - Suginohara Line",
-      period: "20 December 2025 - 22 March 2026",
+      period: "20 December 2026 - 22 March 2027",
       fare: "One way: ¥1,000 | Akakura Onsen to Hotel Windsor: ¥500",
       status: "active",
       directions: [
         {
           label: "Akakura to Ikenotaira to Suginohara",
           columns: [
-            "Service", "Myoko Kogen Terminal", "Akakura Onsen Ski Area", 
-            "Akakura Kanko Resort", "Hotel Windsor", "Alpen Blick Spa", 
-            "Ikenotaira Ski Area", "Tourist Association", "Lime Resort", 
-            "Suginozawa Fire Hut", "Suginohara Ski Area"
+            "Service", "Myoko Bus Terminal", "Akakura Onsen",
+            "Akakura Kanko", "Hotel Windsor", "Alpen Blick Spa",
+            "Ikenotaira Ski Resort", "Ikenotaira T.O", "Lime Resort",
+            "Suginozawa Fire Station", "Suginohara Ski Resort"
           ],
           rows: [
-            { mark: "◎", times: ["07:50", "08:00", "08:02", "08:05", "08:12", "08:15", "08:18", "08:19", "08:23", "08:27"] },
-            { mark: "★", times: ["08:20", "08:30", "08:32", "08:34", "08:40", "08:45", "08:48", "08:49", "08:53", "08:57"] },
-            { mark: "◎", times: ["-", "09:00", "09:02", "09:04", "09:10", "09:15", "09:18", "09:19", "09:23", "09:27"] },
-            { mark: "★", times: ["-", "09:30", "09:32", "09:34", "09:40", "09:45", "09:48", "09:49", "09:53", "09:57"] },
-            { mark: "◎", times: ["-", "10:00", "10:02", "10:04", "10:10", "10:15", "10:18", "10:19", "10:23", "10:27"] },
-            { mark: "★", times: ["-", "15:00", "15:02", "15:04", "15:10", "15:15", "15:18", "15:19", "15:23", "15:27"] },
-            { mark: "◎", times: ["-", "15:30", "15:32", "15:34", "15:42", "15:45", "15:48", "15:49", "15:53", "15:57"] },
-            { mark: "★", times: ["-", "16:00", "16:02", "16:04", "16:10", "16:15", "16:18", "16:19", "16:23", "16:27"] },
+            { mark: "◎", times: ["7:50", "8:00", "8:02", "8:05", "8:12", "8:15", "8:18", "8:19", "8:23", "8:27"] },
+            { mark: "★", times: ["8:20", "8:30", "8:32", "8:34", "8:40", "8:45", "8:48", "8:49", "8:53", "8:57"] },
+            { mark: "◎", times: ["—", "9:00", "9:02", "9:04", "9:10", "9:15", "9:18", "9:19", "9:23", "9:27"] },
+            { mark: "★", times: ["—", "9:30", "9:32", "9:34", "9:40", "9:45", "9:48", "9:49", "9:53", "9:57"] },
+            { mark: "◎", times: ["—", "10:00", "10:02", "10:04", "10:10", "10:15", "10:18", "10:19", "10:23", "10:27"] },
+            { mark: "★", times: ["—", "15:00", "15:02", "15:04", "15:10", "15:15", "15:18", "15:19", "15:23", "15:27"] },
+            { mark: "◎", times: ["—", "15:30", "15:32", "15:34", "15:42", "15:45", "15:48", "15:49", "15:53", "15:57"] },
+            { mark: "★", times: ["—", "16:00", "16:02", "16:04", "16:10", "16:15", "16:18", "16:19", "16:23", "16:27"] },
+          ],
+          notes: [
+            "Stops marked with — are not served by the bus. Boarding and drop-off are not available.",
+            "Services marked with ◎ operate from December 20 to March 22.",
+            "Services marked with ★ operate until March 1. These services do not operate from March 2 onward."
           ]
         },
         {
           label: "Suginohara to Ikenotaira to Akakura",
           columns: [
-            "Service", "Suginohara Ski Area", "Suginozawa Fire Hut", 
-            "Ikenotaira Lime Resort", "Tourist Association", "Ikenotaira Ski Area", 
-            "Alpen Blick Spa", "Akakura Kanko Resort", "Akakura Onsen Ski Area", 
-            "Hotel Windsor", "Myoko Kogen Terminal"
+            "Service", "Suginohara Ski Resort", "Suginozawa Fire Station",
+            "Lime Resort Myoko", "Ikenotaira T.O", "Ikenotaira Ski Resort",
+            "Alpen Blick Spa", "Akakura Kanko", "Akakura Onsen",
+            "Hotel Windsor", "Myoko Bus Terminal"
           ],
           rows: [
-            { mark: "◎", times: ["08:30", "08:33", "08:38", "08:39", "08:45", "08:47", "08:56", "08:58", "-", "-"] },
-            { mark: "★", times: ["09:00", "09:03", "09:08", "09:09", "09:15", "09:17", "09:26", "09:28", "-", "-"] },
-            { mark: "◎", times: ["09:30", "09:33", "09:38", "09:39", "09:45", "09:47", "09:56", "09:58", "-", "-"] },
-            { mark: "★", times: ["14:15", "14:18", "14:23", "14:24", "14:30", "14:33", "14:41", "14:43", "-", "-"] },
-            { mark: "◎", times: ["15:00", "15:03", "15:08", "15:09", "15:15", "15:17", "15:25", "15:27", "-", "-"] },
-            { mark: "★", times: ["15:30", "15:33", "15:38", "15:39", "15:45", "15:47", "15:56", "15:58", "-", "-"] },
+            { mark: "◎", times: ["8:30", "8:33", "8:38", "8:39", "8:45", "8:47", "8:56", "8:58", "—", "—"] },
+            { mark: "★", times: ["9:00", "9:03", "9:08", "9:09", "9:15", "9:17", "9:26", "9:28", "—", "—"] },
+            { mark: "◎", times: ["9:30", "9:33", "9:38", "9:39", "9:45", "9:47", "9:56", "9:58", "—", "—"] },
+            { mark: "★", times: ["14:15", "14:18", "14:23", "14:24", "14:30", "14:33", "14:41", "14:43", "—", "—"] },
+            { mark: "◎", times: ["15:00", "15:03", "15:08", "15:09", "15:15", "15:17", "15:25", "15:27", "—", "—"] },
+            { mark: "★", times: ["15:30", "15:33", "15:38", "15:39", "15:45", "15:47", "15:56", "15:58", "—", "—"] },
             { mark: "◎", times: ["16:00", "16:03", "16:08", "16:09", "16:15", "16:17", "16:26", "16:28", "16:30", "16:35"] },
             { mark: "★", times: ["16:30", "16:33", "16:38", "16:39", "16:45", "16:47", "16:56", "16:58", "17:02", "17:07"] },
+          ],
+          notes: [
+            "Stops marked with — are not served by the bus. Boarding and drop-off are not available. ",
+            "Services marked with ◎ operate from December 20 to March 22.",
+            "Services marked with ★ operate until March 1. These services do not operate from March 2 onward."
           ]
         }
       ],
@@ -92,48 +103,47 @@ export function LocalTimetable() {
       ]
     },
     {
-      title: "Lotte Arai Resort - Akakura - Madarao Kogen Line",
+      title: "Lotte Arai Resort - Akakura - Tangram Line",
       period: "Winter Season (Start Date Undecided)",
-      fare: "Variable by distance (e.g. Lotte Arai to Madarao: ¥3,600)",
+      fare: "Variable by distance (e.g. Lotte Arai to Tangram: ¥3,900)",
       status: "suspended",
       directions: [
         {
-          label: "Lotte Arai Resort to Akakura to Madarao",
+          label: "Lotte Arai Resort to Tangram via Akakura",
           columns: [
-            "Lotte Arai Resort", "Akakura Onsen", "Akakura Kanko", 
-            "Hotel Windsor", "Myoko Kogen Terminal", "Tangram", "Madarao Kogen Hotel"
+            "Lotte Arai Resort", "Akakura Onsen", "Akakura Kanko",
+            "Hotel Windsor", "Myoko Kogen Bus Terminal", "Tangram"
           ],
           rows: [
-            { mark: "-", times: ["07:20", "08:05", "08:07", "08:09", "08:12", "08:30", "08:50"] },
-            { mark: "-", times: ["08:55", "10:00", "10:02", "10:04", "10:10", "-", "-"] },
-            { mark: "-", times: ["14:00", "14:50", "14:52", "14:54", "15:00", "15:20", "15:40"] },
-            { mark: "-", times: ["16:00", "16:40", "16:43", "16:46", "16:50", "Terminates", "-"] },
+            { mark: "-", times: ["—", "8:00", "7:57", "8:05", "7:50", "8:30"] },
+            { mark: "-", times: ["9:45", "10:40", "10:37", "10:45", "10:30", "—"] },
+            { mark: "-", times: ["16:05", "16:50", "16:47", "16:45", "17:00 (Final stop)", "—"] },
           ]
         },
         {
-          label: "Madarao to Akakura to Lotte Arai Resort",
+          label: "Tangram to Lotte Arai Resort via Akakura",
           columns: [
-            "Madarao Hotel", "Tangram", "Myoko Kogen Terminal", 
-            "Akakura Onsen", "Akakura Kanko", "Hotel Windsor", "Lotte Arai Resort"
+            "Tangram", "Myoko Kogen Bus Terminal", "Akakura Onsen",
+            "Akakura Kanko", "Hotel Windsor", "Lotte Arai Resort"
           ],
           rows: [
-            { mark: "-", times: ["-", "-", "08:00", "08:10", "08:12", "08:14", "08:55"] },
-            { mark: "-", times: ["09:00", "09:15", "-", "09:45", "09:50", "-", "10:30"] },
-            { mark: "-", times: ["-", "-", "15:00", "15:10", "15:13", "15:15", "16:00"] },
-            { mark: "-", times: ["15:45", "16:05", "16:25", "16:33", "16:31", "16:35", "17:15"] },
+            { mark: "-", times: ["8:30", "8:50", "9:00", "9:47", "9:05", "9:45"] },
+            { mark: "-", times: ["—", "15:20", "15:10", "15:13", "15:15", "16:05*"] },
           ]
         }
       ],
       notes: [
-        "This route is currently suspended / operation start date undecided.",
-        "Please tell the driver your destination before boarding and pay the fare shown for your journey.",
-        "Check current operation status before travel."
+        "Times shown in parentheses are drop-off only.",
+        "Service to Madarao Kogen Hotel is no longer available.",
+        "The service arriving at Lotte Arai Resort at 16:05 only continues to Lotte Arai Resort when at least one passenger is travelling there from the Akakura area."
       ]
     }
   ]
 
   const currentRoute = routes[activeTab]
   const currentDirection = currentRoute.directions[directionIndex]
+  const currentNotes = currentDirection.notes || currentRoute.notes
+  const hasServiceColumn = currentDirection.columns[0] === "Service"
 
   const handleTabChange = (index: number) => {
     setActiveTab(index)
@@ -154,7 +164,7 @@ export function LocalTimetable() {
               Local Shuttle Timetables
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed">
-              Winter local shuttle services connecting Akakura, Ikenotaira, Suginohara, Myoko Kogen, Lotte Arai, Tangram, and Madarao.
+              Winter local shuttle services connecting Akakura, Ikenotaira, Suginohara, Myoko Kogen, Lotte Arai, and Tangram.
             </p>
           </div>
 
@@ -166,12 +176,12 @@ export function LocalTimetable() {
                 onClick={() => handleTabChange(idx)}
                 className={cn(
                   "flex-1 p-6 rounded-[2rem] text-left transition-all border-2",
-                  activeTab === idx 
-                    ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200" 
+                  activeTab === idx
+                    ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200"
                     : "bg-white border-slate-100 text-slate-600 hover:border-slate-200"
                 )}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between gap-2 mb-2">
                   <div className={cn(
                     "p-2 rounded-xl",
                     activeTab === idx ? "bg-white/10" : "bg-slate-50"
@@ -179,8 +189,8 @@ export function LocalTimetable() {
                     <Mountain className="w-5 h-5" />
                   </div>
                   {route.status === "suspended" && (
-                    <Badge variant="warning" className="bg-amber-500 hover:bg-amber-500 border-none">
-                      Suspended
+                    <Badge variant="warning" className="bg-amber-500 hover:bg-amber-500 border-none whitespace-nowrap shrink-0">
+                      Operation Start Undecided
                     </Badge>
                   )}
                 </div>
@@ -218,13 +228,13 @@ export function LocalTimetable() {
                   onClick={() => setDirectionIndex(idx)}
                   className={cn(
                     "px-6 py-2.5 text-sm font-bold rounded-xl transition-all flex items-center gap-2",
-                    directionIndex === idx 
-                      ? "bg-white text-primary shadow-sm" 
+                    directionIndex === idx
+                      ? "bg-white text-primary shadow-sm"
                       : "text-slate-500 hover:text-slate-900"
                   )}
                 >
                   <ArrowRight className={cn("w-4 h-4", idx === 1 && "rotate-180")} />
-                  {dir.label.split(" to ")[0]} to {dir.label.split(" to ").pop()}
+                  {dir.label.split(" to ")[0]} to {dir.label.split(" to ").pop()?.replace(" via Akakura", "")}
                 </button>
               ))}
             </div>
@@ -249,7 +259,7 @@ export function LocalTimetable() {
                   <thead>
                     <tr className="bg-slate-50/50">
                       {currentDirection.columns.map((col, i) => (
-                        <th key={i} className="px-5 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
+                        <th key={i} className="px-5 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 whitespace-nowrap">
                           {col}
                         </th>
                       ))}
@@ -258,20 +268,22 @@ export function LocalTimetable() {
                   <tbody className="divide-y divide-slate-50">
                     {currentDirection.rows.map((row, i) => (
                       <tr key={i} className="hover:bg-slate-50/30 transition-colors group">
-                        <td className="px-5 py-6 border-b border-slate-100">
-                          <Badge variant="outline" className={cn(
-                            "rounded-md font-bold border-none",
-                            row.mark === "◎" ? "bg-primary text-white" : 
-                            row.mark === "★" ? "bg-secondary text-white" : 
-                            "bg-slate-100 text-slate-400"
-                          )}>
-                            {row.mark}
-                          </Badge>
-                        </td>
+                        {hasServiceColumn && (
+                          <td className="px-5 py-6 border-b border-slate-100 whitespace-nowrap">
+                            <Badge variant="outline" className={cn(
+                              "rounded-md font-bold border-none px-2 py-0.5 text-xs",
+                              row.mark === "◎" ? "bg-emerald-600 text-white" :
+                                row.mark === "★" ? "bg-primary text-white" :
+                                  "bg-slate-100 text-slate-400"
+                            )}>
+                              {row.mark}
+                            </Badge>
+                          </td>
+                        )}
                         {row.times.map((time, j) => (
                           <td key={j} className={cn(
-                            "px-5 py-6 text-sm font-bold border-b border-slate-100",
-                            time === "-" ? "text-slate-300 font-medium" : "text-slate-900"
+                            "px-5 py-6 text-sm font-bold border-b border-slate-100 whitespace-nowrap",
+                            time === "-" || time === "—" ? "text-slate-300 font-medium" : "text-slate-900"
                           )}>
                             {time}
                           </td>
@@ -284,70 +296,132 @@ export function LocalTimetable() {
 
               {/* Mobile Card View */}
               <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-6">
-                {currentDirection.rows.map((row, i) => (
-                  <div key={i} className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-50">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={cn(
-                          "rounded-md font-bold border-none",
-                          row.mark === "◎" ? "bg-primary text-white" : 
-                          row.mark === "★" ? "bg-secondary text-white" : 
-                          "bg-slate-100 text-slate-400"
-                        )}>
-                          {row.mark}
-                        </Badge>
-                        <span className="text-xs font-bold text-slate-400">SERVICE {i + 1}</span>
+                {currentDirection.rows.map((row, i) => {
+                  const stopsList = hasServiceColumn ? currentDirection.columns.slice(1) : currentDirection.columns
+                  return (
+                    <div key={i} className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-6">
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-50">
+                        <div className="flex items-center gap-2">
+                          {hasServiceColumn && row.mark !== "-" && (
+                            <Badge variant="outline" className={cn(
+                              "rounded-md font-bold border-none px-2 py-0.5 text-xs",
+                              row.mark === "◎" ? "bg-emerald-600 text-white" :
+                                row.mark === "★" ? "bg-primary text-white" :
+                                  "bg-slate-100 text-slate-400"
+                            )}>
+                              {row.mark}
+                            </Badge>
+                          )}
+                          <span className="text-xs font-bold text-slate-400">SERVICE {i + 1}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-primary font-bold">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-xs uppercase tracking-wider">Schedule</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 text-primary font-bold">
-                        <Clock className="w-4 h-4" />
-                        <span className="text-xs uppercase tracking-wider">Schedule</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      {currentDirection.columns.slice(1).map((col, j) => {
-                        const time = row.times[j];
-                        if (time === "-") return null;
-                        return (
-                          <div key={j} className="flex items-center justify-between group">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{col}</p>
-                            <div className="flex items-center gap-3">
-                              <div className="h-px w-8 bg-slate-100 group-hover:bg-primary/20 transition-colors" />
-                              <p className="text-sm font-bold text-slate-900">{time}</p>
+
+                      <div className="space-y-4">
+                        {stopsList.map((col, j) => {
+                          const time = row.times[j];
+                          if (time === "-" || time === "—") return null;
+                          return (
+                            <div key={j} className="flex items-center justify-between group">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{col}</p>
+                              <div className="flex items-center gap-3">
+                                <div className="h-px w-8 bg-slate-100 group-hover:bg-primary/20 transition-colors" />
+                                <p className="text-sm font-bold text-slate-900">{time}</p>
+                              </div>
                             </div>
-                          </div>
-                        )
-                      })}
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
-              {/* Local Fare Examples for Tab 2 */}
+              {/* One-Way Fare Table for Tab 2 (Lotte Arai Resort - Akakura - Tangram Line) */}
               {activeTab === 1 && (
-                <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                  <div className="flex items-center gap-3 mb-6">
-                    <CreditCard className="w-5 h-5 text-primary" />
-                    <h4 className="font-bold text-slate-900">Route Fare Examples</h4>
+                <div className="bg-slate-50 rounded-3xl p-6 sm:p-8 border border-slate-100 space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-primary" />
+                      <h4 className="font-bold text-lg text-slate-900">One-Way Fares</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                      Tell the driver your destination before boarding and pay the applicable fare.
+                    </p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[
-                      { route: "Local Short Rides", price: "from ¥500" },
-                      { route: "Lotte Arai to Akakura", price: "¥2,000" },
-                      { route: "Bus Terminal to Akakura", price: "¥1,500" },
-                      { route: "Lotte Arai to Tangram", price: "¥3,200" },
-                      { route: "Lotte Arai to Madarao", price: "¥3,600" },
-                      { route: "Tangram to Madarao", price: "¥600" },
-                    ].map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100">
-                        <span className="text-sm font-medium text-slate-600">{item.route}</span>
-                        <span className="text-sm font-bold text-slate-900">{item.price}</span>
-                      </div>
-                    ))}
+
+                  {/* Scrollable Fare Matrix Table */}
+                  <div className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+                    <table className="w-full text-left border-collapse min-w-max text-xs sm:text-sm">
+                      <thead>
+                        <tr className="bg-slate-100/70 border-b border-slate-200">
+                          <th className="px-4 py-4 font-bold text-slate-700 uppercase tracking-wider sticky left-0 bg-slate-100 z-10 whitespace-nowrap shadow-[1px_0_0_0_#e2e8f0]">
+                            From / To
+                          </th>
+                          {[
+                            "Lotte Arai Resort",
+                            "Akakura Onsen",
+                            "Akakura Kanko",
+                            "Hotel Windsor",
+                            "Myoko Bus Terminal",
+                            "Tangram"
+                          ].map((header, i) => (
+                            <th key={i} className="px-4 py-4 font-bold text-slate-600 whitespace-nowrap text-center">
+                              {header}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {[
+                          {
+                            from: "Lotte Arai Resort",
+                            fares: ["—", "¥2,200", "¥2,200", "¥2,200", "¥2,200", "¥3,900"]
+                          },
+                          {
+                            from: "Akakura Onsen Ski Resort",
+                            fares: ["¥2,200", "—", "¥500", "¥500", "¥1,500", "¥1,700"]
+                          },
+                          {
+                            from: "Akakura Kanko Resort Ski Area",
+                            fares: ["¥2,200", "¥500", "—", "¥500", "¥1,500", "¥1,700"]
+                          },
+                          {
+                            from: "Hotel Windsor",
+                            fares: ["¥2,200", "¥500", "¥500", "—", "¥1,500", "¥1,700"]
+                          },
+                          {
+                            from: "Myoko Kogen Bus Terminal",
+                            fares: ["¥2,200", "¥1,500", "¥1,500", "¥1,500", "—", "¥1,700"]
+                          },
+                          {
+                            from: "Tangram",
+                            fares: ["¥3,900", "¥1,700", "¥1,700", "¥1,700", "¥1,700", "—"]
+                          }
+                        ].map((row, i) => (
+                          <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="px-4 py-3.5 font-semibold text-slate-900 sticky left-0 bg-white z-10 whitespace-nowrap shadow-[1px_0_0_0_#f1f5f9]">
+                              {row.from}
+                            </td>
+                            {row.fares.map((price, j) => (
+                              <td
+                                key={j}
+                                className={cn(
+                                  "px-4 py-3.5 text-center font-bold whitespace-nowrap",
+                                  price === "—" ? "text-slate-300 font-normal" : "text-slate-800"
+                                )}
+                              >
+                                {price}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <p className="text-xs text-slate-500 mt-6 leading-relaxed">
-                    Please tell the driver your destination before boarding and pay the fare shown for your journey. Prices include tax.
-                  </p>
                 </div>
               )}
 
@@ -359,7 +433,7 @@ export function LocalTimetable() {
                     Service Guidelines
                   </h4>
                   <ul className="space-y-3">
-                    {currentRoute.notes.map((note, i) => (
+                    {currentNotes.map((note, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-1.5" />
                         <span>{note}</span>
@@ -374,7 +448,7 @@ export function LocalTimetable() {
                   </h4>
                   <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
                     <p className="text-xs text-slate-500 leading-relaxed italic">
-                      Schedules and fares may change without notice depending on weather, traffic, road conditions, and operating dates. 
+                      Schedules and fares may change without notice depending on weather, traffic, road conditions, and operating dates.
                     </p>
                     <p className="text-xs text-slate-500 leading-relaxed italic">
                       Tickets may also be available at tourist associations, ski resorts, and some accommodation providers.
