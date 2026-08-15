@@ -42,8 +42,8 @@ export function LocalTimetable() {
   const routes: RouteData[] = [
     {
       title: "Akakura - Ikenotaira - Suginohara Line",
-      period: "20 December 2026 - 22 March 2027",
-      fare: "One way: ¥1,000 | Akakura Onsen to Hotel Windsor: ¥500",
+      period: "December 19, 2026 – March 24, 2027",
+      fare: "One way: ¥1,100 | Akakura Onsen to Hotel Windsor: ¥600",
       status: "active",
       directions: [
         {
@@ -66,8 +66,8 @@ export function LocalTimetable() {
           ],
           notes: [
             "Stops marked with — are not served by the bus. Boarding and drop-off are not available.",
-            "Services marked with ◎ operate from December 20 to March 22.",
-            "Services marked with ★ operate until March 1. These services do not operate from March 2 onward."
+            "Services marked with ◎ operate from December 19 to March 24.",
+            "Services marked with ★ operate until February 28. These services do not operate from March 1 onward."
           ]
         },
         {
@@ -90,14 +90,14 @@ export function LocalTimetable() {
           ],
           notes: [
             "Stops marked with — are not served by the bus. Boarding and drop-off are not available. ",
-            "Services marked with ◎ operate from December 20 to March 22.",
-            "Services marked with ★ operate until March 1. These services do not operate from March 2 onward."
+            "Services marked with ◎ operate from December 19 to March 24.",
+            "Services marked with ★ operate until February 28. These services do not operate from March 1 onward."
           ]
         }
       ],
       notes: [
-        "◎ operates from 20 December to 22 March",
-        "★ operates until 1 March only. No ★ services from 2 March onward.",
+        "Services marked with ◎ operate from December 19 to March 24.",
+        "Services marked with ★ operate until February 28. These services do not operate from March 1 onward.",
         "Payment can be made when boarding.",
         "Please arrive 5-10 minutes before departure."
       ]
@@ -214,7 +214,7 @@ export function LocalTimetable() {
                 <div className="space-y-1">
                   <h4 className="font-bold text-amber-900">Operation Start Date Undecided</h4>
                   <p className="text-sm text-amber-800 leading-relaxed">
-                    This route is currently suspended for the 2025–2026 season. Please check current operation status or contact local tourist associations before planning your travel.
+                    This route is currently suspended for the 2026–2027 season. Please check current operation status or contact local tourist associations before planning your travel.
                   </p>
                 </div>
               </div>
