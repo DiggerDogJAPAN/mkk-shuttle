@@ -33,7 +33,7 @@ export function TimetableSection() {
   const toMyokoData: TimetableData = {
     title: "Narita / Haneda Airport to Myoko & Madarao",
     columns: [
-      "Narita Airport", "Haneda Airport", "Miyoshi PA", "Iiyama Station",
+      "Narita Airport", "Haneda Airport", "Sakaki PA", "Iiyama Station",
       "Madarao Kogen", "Hotel Tangram", "Ikenotaira", "Shin-Akakura",
       "Akakura Kanko", "Akakura Onsen", "Price Narita", "Price Haneda"
     ],
@@ -71,12 +71,12 @@ export function TimetableSection() {
         "Haneda Airport": "22:20",
         "Saku PA": "-",
         "Iiyama Station": "-",
-        "Madarao Kogen": "07:25*",
-        "Hotel Tangram": "07:50*",
-        "Ikenotaira": "08:20*",
-        "Shin-Akakura": "08:30*",
+        "Madarao Kogen": "06:45*",
+        "Hotel Tangram": "07:10*",
+        "Ikenotaira": "07:40*",
+        "Shin-Akakura": "07:45*",
         "Akakura Kanko": "-",
-        "Akakura Onsen": "08:35*",
+        "Akakura Onsen": "07:50*",
         "Price Narita": "¥13,500",
         "Price Haneda": "¥12,500"
       }
@@ -94,7 +94,7 @@ export function TimetableSection() {
     title: "Myoko & Madarao to Haneda / Narita Airport",
     columns: [
       "Akakura Onsen", "Akakura Kanko", "Shin-Akakura", "Ikenotaira",
-      "Tangram Madarao", "Madarao Kogen", "Iiyama Station", "Miyoshi PA",
+      "Tangram Madarao", "Madarao Kogen", "Iiyama Station", "Sakaki PA",
       "Tokyo Terminal", "Haneda Airport", "Narita Airport",
       "Price Narita", "Price Haneda", "Price Tokyo"
     ],
@@ -125,19 +125,19 @@ export function TimetableSection() {
         "Iiyama Station": "11:10",
         "Saku PA": "13:00",
         "Tokyo Terminal": "-",
-        "Haneda Airport": "-",
+        "Haneda Airport": "17:10",
         "Narita Airport": "17:00",
         "Price Narita": "¥12,500",
         "Price Haneda": "-",
         "Price Tokyo": "-"
       },
       {
-        "Akakura Onsen": "14:20",
+        "Akakura Onsen": "14:50",
         "Akakura Kanko": "-",
-        "Shin-Akakura": "14:25",
-        "Ikenotaira": "14:35",
-        "Tangram Madarao": "15:05",
-        "Madarao Kogen": "15:40",
+        "Shin-Akakura": "14:55",
+        "Ikenotaira": "15:05",
+        "Tangram Madarao": "15:35",
+        "Madarao Kogen": "16:10",
         "Iiyama Station": "-",
         "Saku PA": "-",
         "Tokyo Terminal": "21:36",
