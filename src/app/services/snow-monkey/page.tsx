@@ -48,10 +48,10 @@ export default function SnowMonkeyPage() {
       <section className="relative min-h-[80vh] flex items-center bg-slate-900 overflow-hidden py-20">
         {/* Background Decorative Element */}
         <div className="absolute inset-0 z-0">
-          <Image 
-            src="/images/snow-monkey/1.jpg" 
-            alt="Snow Monkey" 
-            fill 
+          <Image
+            src="/images/snow-monkey/1.jpg"
+            alt="Snow Monkey"
+            fill
             className="object-cover opacity-60"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent" />
@@ -101,11 +101,11 @@ export default function SnowMonkeyPage() {
               <div className="flex flex-wrap gap-4">
                 <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/10">
                   <span className="text-xs text-slate-400 block mb-1">Akakura Return</span>
-                  <span className="text-2xl font-bold text-white">¥5,000</span>
+                  <span className="text-2xl font-bold text-white">¥7,000</span>
                 </div>
                 <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/10">
                   <span className="text-xs text-slate-400 block mb-1">Lotte Arai Return</span>
-                  <span className="text-2xl font-bold text-white">¥8,000</span>
+                  <span className="text-2xl font-bold text-white">¥10,000</span>
                 </div>
               </div>
 
@@ -136,11 +136,11 @@ export default function SnowMonkeyPage() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-[#C9A86A]/20 rounded-[2.5rem] blur-2xl group-hover:bg-[#C9A86A]/30 transition-all duration-500" />
               <div className="relative aspect-video rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl bg-slate-800">
-                <iframe 
+                <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/OLLPDuprgSg" 
+                  src="https://www.youtube.com/embed/OLLPDuprgSg"
                   title="Snow Monkey Park"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
               </div>
@@ -244,29 +244,29 @@ export default function SnowMonkeyPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[600px]">
               <div className="md:col-span-8 relative rounded-[2.5rem] overflow-hidden group">
-                <Image 
-                  src="/images/snow-monkey/1.jpg" 
-                  alt="Snow Monkey 1" 
-                  fill 
+                <Image
+                  src="/images/snow-monkey/1.jpg"
+                  alt="Snow Monkey 1"
+                  fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
               </div>
               <div className="md:col-span-4 grid grid-rows-2 gap-6">
                 <div className="relative rounded-[2.5rem] overflow-hidden group">
-                  <Image 
-                    src="/images/snow-monkey/2.jpg" 
-                    alt="Snow Monkey 2" 
-                    fill 
+                  <Image
+                    src="/images/snow-monkey/2.jpg"
+                    alt="Snow Monkey 2"
+                    fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
                 </div>
                 <div className="relative rounded-[2.5rem] overflow-hidden group">
-                  <Image 
-                    src="/images/snow-monkey/3.jpg" 
-                    alt="Snow Monkey 3" 
-                    fill 
+                  <Image
+                    src="/images/snow-monkey/3.jpg"
+                    alt="Snow Monkey 3"
+                    fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
@@ -351,11 +351,11 @@ export default function SnowMonkeyPage() {
               <div className="relative z-10 max-w-2xl mx-auto space-y-6">
                 <h3 className="text-3xl font-bold">Ready to see the Snow Monkeys?</h3>
                 <p className="text-slate-400">
-                  No booking needed. Simply check the timetable and meet us at your nearest bus stop. 
+                  No booking needed. Simply check the timetable and meet us at your nearest bus stop.
                   Remember to bring cash for the journey.
                 </p>
                 <div className="pt-4">
-                  <Link 
+                  <Link
                     href="#timetable"
                     className={cn(
                       buttonVariants({ size: "lg" }),

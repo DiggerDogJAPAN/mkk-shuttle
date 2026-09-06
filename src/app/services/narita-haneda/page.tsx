@@ -7,7 +7,7 @@ import {
   ArrowRight,
   MapPin,
   Clock,
-  Snowflake,
+  Ticket,
   ShieldCheck,
   CheckCircle2,
   Backpack,
@@ -29,7 +29,11 @@ export default function NaritaHanedaPage() {
     { icon: Backpack, text: "Ski & Snowboard Friendly" },
     { icon: MapPin, text: "Direct Resort Drop-offs" },
     { icon: Globe, text: "English Support" },
-    { icon: Snowflake, text: "Winter Ready Vehicles" },
+    {
+      icon: Ticket,
+      text: "Free Local Shuttle Tickets",
+      subtext: "One-way booking: 1 ticket · Return booking: 5 tickets"
+    },
   ]
 
   return (
@@ -120,7 +124,14 @@ export default function NaritaHanedaPage() {
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover/item:bg-primary/10 group-hover/item:text-primary transition-all duration-300">
                         <feature.icon className="h-6 w-6" />
                       </div>
-                      <span className="text-lg font-medium text-slate-700">{feature.text}</span>
+                      <div className="min-w-0">
+                        <span className="text-lg font-medium text-slate-700 block leading-snug">{feature.text}</span>
+                        {feature.subtext && (
+                          <span className="text-xs sm:text-sm text-slate-500 font-normal block mt-0.5 leading-snug">
+                            {feature.subtext}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -383,15 +383,15 @@ export function LocalTimetable() {
                           },
                           {
                             from: "Akakura Onsen Ski Resort",
-                            fares: ["¥2,200", "—", "¥500", "¥500", "¥1,500", "¥1,700"]
+                            fares: ["¥2,200", "—", "¥600", "¥600", "¥1,500", "¥1,700"]
                           },
                           {
                             from: "Akakura Kanko Resort Ski Area",
-                            fares: ["¥2,200", "¥500", "—", "¥500", "¥1,500", "¥1,700"]
+                            fares: ["¥2,200", "¥600", "—", "¥600", "¥1,500", "¥1,700"]
                           },
                           {
                             from: "Hotel Windsor",
-                            fares: ["¥2,200", "¥500", "¥500", "—", "¥1,500", "¥1,700"]
+                            fares: ["¥2,200", "¥600", "¥600", "—", "¥1,500", "¥1,700"]
                           },
                           {
                             from: "Myoko Kogen Bus Terminal",
