@@ -35,7 +35,7 @@ export function TimetableSection() {
     columns: [
       "Narita Airport", "Haneda Airport", "Sakaki PA", "Iiyama Station",
       "Madarao Kogen", "Hotel Tangram", "Ikenotaira", "Shin-Akakura",
-      "Akakura Kanko", "Akakura Onsen", "Price Narita", "Price Haneda"
+      "Akakura Kanko", "Akakura Onsen", "Lotte Arai", "Price Narita", "Price Haneda"
     ],
     rows: [
       {
@@ -49,6 +49,7 @@ export function TimetableSection() {
         "Shin-Akakura": "14:00",
         "Akakura Kanko": "14:05",
         "Akakura Onsen": "14:10",
+        "Lotte Arai": "15:10",
         "Price Narita": "-",
         "Price Haneda": "¥11,500"
       },
@@ -63,6 +64,7 @@ export function TimetableSection() {
         "Shin-Akakura": "16:30",
         "Akakura Kanko": "16:35",
         "Akakura Onsen": "16:40",
+        "Lotte Arai": "17:10",
         "Price Narita": "¥12,500",
         "Price Haneda": "¥11,500"
       },
@@ -77,6 +79,7 @@ export function TimetableSection() {
         "Shin-Akakura": "07:45*",
         "Akakura Kanko": "-",
         "Akakura Onsen": "07:50*",
+        "Lotte Arai": "-",
         "Price Narita": "¥13,500",
         "Price Haneda": "¥12,500"
       }
@@ -93,13 +96,14 @@ export function TimetableSection() {
   const fromMyokoData: TimetableData = {
     title: "Myoko & Madarao to Haneda / Narita Airport",
     columns: [
-      "Akakura Onsen", "Akakura Kanko", "Shin-Akakura", "Ikenotaira",
+      "Lotte Arai", "Akakura Onsen", "Akakura Kanko", "Shin-Akakura", "Ikenotaira",
       "Tangram Madarao", "Madarao Kogen", "Iiyama Station", "Sakaki PA",
       "Tokyo Terminal", "Haneda Airport", "Narita Airport",
       "Price Narita", "Price Haneda", "Price Tokyo"
     ],
     rows: [
       {
+        "Lotte Arai": "7:20",
         "Akakura Onsen": "08:00",
         "Akakura Kanko": "08:05",
         "Shin-Akakura": "08:10",
@@ -116,6 +120,7 @@ export function TimetableSection() {
         "Price Tokyo": "¥9,500"
       },
       {
+        "Lotte Arai": "9:10",
         "Akakura Onsen": "10:00",
         "Akakura Kanko": "10:05",
         "Shin-Akakura": "10:10",
@@ -132,6 +137,7 @@ export function TimetableSection() {
         "Price Tokyo": "-"
       },
       {
+        "Lotte Arai": "-",
         "Akakura Onsen": "14:50",
         "Akakura Kanko": "-",
         "Shin-Akakura": "14:55",

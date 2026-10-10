@@ -127,7 +127,12 @@ export async function POST(request: Request) {
       )
     }
 
-    if (!bookingPayload.passengers || bookingPayload.passengers < 1) {
+    if (
+      !bookingPayload.passengers || 
+      !Number.isInteger(bookingPayload.passengers) || 
+      bookingPayload.passengers < 1 || 
+      bookingPayload.passengers > 15
+    ) {
       return NextResponse.json(
         { error: 'Invalid passenger count' },
         { status: 400 }

@@ -554,7 +554,7 @@ export function BookingForm() {
                     onChange={(e) => setPassengers(Number(e.target.value))}
                     className="w-full h-14 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-900 appearance-none"
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((n) => (
                       <option key={n} value={n}>
                         {n} Passenger{n > 1 ? 's' : ''}
                       </option>
