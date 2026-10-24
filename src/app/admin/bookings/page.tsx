@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { supabase } from "@/lib/supabaseClient"
 import { getBookingReference, getStatusBadgeStyles, formatBookingStatus } from "@/lib/utils/booking"
 import { cn } from "@/lib/utils"
+import { buildBookingCsv, fetchBookingsForCsv } from "@/lib/utils/booking-csv"
 import { Loader2, Search, Filter, Download } from "lucide-react"
 
 export default function AdminBookingsPage() {
@@ -35,124 +36,43 @@ export default function AdminBookingsPage() {
   const [statusFilter, setStatusFilter] = React.useState('all')
   const [sortBy, setSortBy] = React.useState('travel_date')
   const pageSize = 25
+  const [isExporting, setIsExporting] = React.useState(false)
 
   const handleExportCSV = async () => {
-    let query = supabase
-      .from('bookings')
-      .select('*, route:routes(*), pickup:stops!from_stop_id(*), dropoff:stops!to_stop_id(*)')
-
-    if (statusFilter !== 'all') {
-      query = query.eq('status', statusFilter)
-    }
-
-    if (debouncedSearchTerm) {
-      query = query.or(
-        `first_name.ilike.%${debouncedSearchTerm}%,last_name.ilike.%${debouncedSearchTerm}%,email.ilike.%${debouncedSearchTerm}%`
-      )
-    }
-
-    if (sortBy === 'travel_date') {
-      query = query.order('travel_date', { ascending: true })
-    }
-
-    if (sortBy === 'created_at') {
-      query = query.order('created_at', { ascending: false })
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      console.error('CSV export failed:', error)
-      alert('CSV export failed')
-      return
-    }
-
-    if (!data || data.length === 0) {
-      alert('No bookings to export')
-      return
-    }
-
-    const formatCsvDate = (value: string | null | undefined) => {
-      if (!value) return ''
-      return new Date(value).toISOString().split('T')[0]
-    }
-
-    const headers = [
-      "Reference",
-      "Status",
-      "Customer Name",
-      "Email",
-      "Route",
-      "Travel Date",
-      "Departure Time",
-      "Passengers",
-      "Pickup",
-      "Drop-off",
-      "First name",
-      "Last name",
-      "Phone",
-      "Country",
-      "Passport",
-      "Hotel",
-      "Flight Number",
-      "Shuttle ticket request",
-      "Payment status",
-      "Total Price",
-      "Created Date",
-      "Refunded Date",
-      "Refund Amount",
-      "Cancellation Fee",
-      "Cancellation Reason"
-    ]
-
-    const escape = (val: any) => {
-      if (val === null || val === undefined) return ""
-      const s = String(val)
-      if (s.includes(",") || s.includes("\"") || s.includes("\n")) {
-        return `"${s.replace(/"/g, "\"\"")}"`
+    if (isExporting) return
+    setIsExporting(true)
+    try {
+      const data = await fetchBookingsForCsv(supabase, {
+        statusFilter,
+        searchTerm: debouncedSearchTerm,
+        sortBy,
+      })
+      if (data.length === 0) {
+        alert('No bookings to export')
+        return
       }
-      return s
+      // Build the file only after every batch has succeeded.
+      const csvContent = buildBookingCsv(data)
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      try {
+        const date = new Date().toISOString().split("T")[0]
+        link.setAttribute("href", url)
+        link.setAttribute("download", `bookings-export-${date}.csv`)
+        link.style.visibility = "hidden"
+        document.body.appendChild(link)
+        link.click()
+      } finally {
+        link.remove()
+        URL.revokeObjectURL(url)
+      }
+    } catch (error) {
+      console.error('CSV export failed:', error)
+      alert('CSV export failed. No file was downloaded. Please try again.')
+    } finally {
+      setIsExporting(false)
     }
-
-    const rows = data.map(b => [
-      getBookingReference(b.id),
-      b.status,
-      `${b.first_name} ${b.last_name}`,
-      b.email,
-      `${b.route?.from_location} to ${b.route?.to_location}`,
-      b.travel_date,
-      b.departure_time,
-      b.passengers,
-      b.pickup?.name,
-      b.dropoff?.name,
-      b.first_name,
-      b.last_name,
-      b.phone,
-      b.country,
-      b.passport_number,
-      b.hotel_name,
-      b.flight_number,
-      b.free_tickets ? "Yes" : "No",
-      b.payment_status || "N/A",
-      b.price,
-      formatCsvDate(b.created_at),
-      formatCsvDate(b.refunded_at),
-      b.refund_amount || 0,
-      b.cancellation_fee || 0,
-      b.cancellation_reason || ""
-    ].map(escape))
-
-    const csvContent = [headers, ...rows].map(r => r.join(",")).join("\n")
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    const date = new Date().toISOString().split("T")[0]
-    link.setAttribute("href", url)
-    link.setAttribute("download", `bookings-export-${date}.csv`)
-    link.style.visibility = "hidden"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
   }
 
   const fetchBookings = async () => {
@@ -425,10 +345,11 @@ export default function AdminBookingsPage() {
           </div>
           <button 
             onClick={handleExportCSV}
+            disabled={isExporting}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 gap-2"
           >
             <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <span className="hidden sm:inline">{isExporting ? "Exporting…" : "Export CSV"}</span>
           </button>
         </div>
       </div>
