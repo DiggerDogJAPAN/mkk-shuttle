@@ -63,7 +63,7 @@ export function LocalBusStops() {
     },
     {
       title: "Lotte Arai / Akakura / Tangram Line",
-      status: "suspended",
+      status: "active",
       flow: ["Lotte Arai", "Akakura", "Bus Terminal", "Tangram"],
       stops: [
         { title: "Lotte Arai Resort", type: "resort" },
