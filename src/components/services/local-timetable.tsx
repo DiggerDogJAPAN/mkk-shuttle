@@ -104,38 +104,38 @@ export function LocalTimetable() {
     },
     {
       title: "Lotte Arai Resort - Akakura - Tangram Line",
-      period: "Winter Season (Start Date Undecided)",
+      period: "January 6, 2027 – March 7, 2027",
       fare: "Variable by distance (e.g. Lotte Arai to Tangram: ¥3,900)",
-      status: "suspended",
+      status: "active",
       directions: [
         {
           label: "Lotte Arai Resort to Tangram via Akakura",
           columns: [
-            "Lotte Arai Resort", "Akakura Onsen", "Akakura Kanko",
+            "Lotte Arai Resort / Arai Building Rotary", "Akakura Onsen Ski Resort", "Akakura Kanko Resort Ski Resort",
             "Hotel Windsor", "Myoko Kogen Bus Terminal", "Tangram"
           ],
           rows: [
-            { mark: "-", times: ["—", "8:00", "7:57", "8:05", "7:50", "8:30"] },
-            { mark: "-", times: ["9:45", "10:40", "10:37", "10:45", "10:30", "—"] },
+            { mark: "-", times: ["—", "08:00", "07:57", "08:05", "07:50", "08:30"] },
+            { mark: "-", times: ["09:45", "10:40", "10:37", "10:45", "10:30", "—"] },
             { mark: "-", times: ["16:05", "16:50", "16:47", "16:45", "17:00 (Final stop)", "—"] },
           ]
         },
         {
           label: "Tangram to Lotte Arai Resort via Akakura",
           columns: [
-            "Tangram", "Myoko Kogen Bus Terminal", "Akakura Onsen",
-            "Akakura Kanko", "Hotel Windsor", "Lotte Arai Resort"
+            "Tangram", "Myoko Kogen Bus Terminal", "Akakura Onsen Ski Resort",
+            "Akakura Kanko Resort Ski Resort", "Hotel Windsor", "Lotte Arai Resort / Arai Building Rotary"
           ],
           rows: [
-            { mark: "-", times: ["8:30", "8:50", "9:00", "9:47", "9:05", "9:45"] },
-            { mark: "-", times: ["—", "15:20", "15:10", "15:13", "15:15", "16:05*"] },
+            { mark: "-", times: ["08:30", "08:50", "09:00", "09:02", "09:05", "09:45"] },
+            { mark: "-", times: ["—", "15:20", "15:10", "15:13", "15:15", "16:05"] },
           ]
         }
       ],
       notes: [
         "Times shown in parentheses are drop-off only.",
         "Service to Madarao Kogen Hotel is no longer available.",
-        "The service arriving at Lotte Arai Resort at 16:05 only continues to Lotte Arai Resort when at least one passenger is travelling there from the Akakura area."
+        "The 16:00 departure from Lotte Arai Resort operates only when passengers are travelling from the Akakura area to Lotte Arai Resort. There is no outbound service from Lotte Arai Resort on that trip."
       ]
     }
   ]
@@ -207,19 +207,6 @@ export function LocalTimetable() {
 
           {/* Active Route Content */}
           <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Status Banner for Suspended Routes */}
-            {currentRoute.status === "suspended" && (
-              <div className="p-6 rounded-3xl bg-amber-50 border border-amber-100 flex items-start gap-4">
-                <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <h4 className="font-bold text-amber-900">Operation Start Date Undecided</h4>
-                  <p className="text-sm text-amber-800 leading-relaxed">
-                    This route is currently suspended for the 2026–2027 season. Please check current operation status or contact local tourist associations before planning your travel.
-                  </p>
-                </div>
-              </div>
-            )}
-
             {/* Direction Toggle */}
             <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 p-1.5 rounded-2xl w-fit">
               {currentRoute.directions.map((dir, idx) => (
@@ -349,7 +336,7 @@ export function LocalTimetable() {
                       <h4 className="font-bold text-lg text-slate-900">One-Way Fares</h4>
                     </div>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                      Tell the driver your destination before boarding and pay the applicable fare.
+                      Fares apply in either direction. Tell the driver your destination before boarding and pay the applicable fare.
                     </p>
                   </div>
 
@@ -362,11 +349,11 @@ export function LocalTimetable() {
                             From / To
                           </th>
                           {[
-                            "Lotte Arai Resort",
+                            "Lotte Arai",
                             "Akakura Onsen",
                             "Akakura Kanko",
                             "Hotel Windsor",
-                            "Myoko Bus Terminal",
+                            "Myoko Kogen Bus Terminal",
                             "Tangram"
                           ].map((header, i) => (
                             <th key={i} className="px-4 py-4 font-bold text-slate-600 whitespace-nowrap text-center">
@@ -378,24 +365,24 @@ export function LocalTimetable() {
                       <tbody className="divide-y divide-slate-100">
                         {[
                           {
-                            from: "Lotte Arai Resort",
+                            from: "Lotte Arai",
                             fares: ["—", "¥2,200", "¥2,200", "¥2,200", "¥2,200", "¥3,900"]
                           },
                           {
-                            from: "Akakura Onsen Ski Resort",
-                            fares: ["¥2,200", "—", "¥600", "¥600", "¥1,500", "¥1,700"]
+                            from: "Akakura Onsen",
+                            fares: ["¥2,200", "—", "¥600", "¥600", "¥600", "¥1,700"]
                           },
                           {
-                            from: "Akakura Kanko Resort Ski Area",
-                            fares: ["¥2,200", "¥600", "—", "¥600", "¥1,500", "¥1,700"]
+                            from: "Akakura Kanko",
+                            fares: ["¥2,200", "¥600", "—", "¥600", "¥600", "¥1,700"]
                           },
                           {
                             from: "Hotel Windsor",
-                            fares: ["¥2,200", "¥600", "¥600", "—", "¥1,500", "¥1,700"]
+                            fares: ["¥2,200", "¥600", "¥600", "—", "¥600", "¥1,700"]
                           },
                           {
                             from: "Myoko Kogen Bus Terminal",
-                            fares: ["¥2,200", "¥1,500", "¥1,500", "¥1,500", "—", "¥1,700"]
+                            fares: ["¥2,200", "¥600", "¥600", "¥600", "—", "¥1,700"]
                           },
                           {
                             from: "Tangram",
